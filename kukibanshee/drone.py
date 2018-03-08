@@ -4,6 +4,12 @@ from kukibanshee import rfc6265
 def help():
     if(func_name == ''):
         doc = '''
+            >>> from kukibanshee.drone import *
+            >>> ckpair = "TS=0105b666"
+            >>> ckpt = ckpair2tuple(ckpair)
+            >>> ckpt
+            ('TS', '0105b666')
+            >>>
         '''
         print(doc)
     elif(func_name == ''):
@@ -96,6 +102,7 @@ TYPES = {
 #Part.1  cookie-pair
 #命名规则priority ckpair > cknv > ckpt > ckpd
 #[ckpair2tuple,tuple2ckpair,ckpair2nv,nv2ckpair,ckpair2dict,dict2ckpair,cknv2tuple,tuple2cknv,cknv2dict,dict2cknv,ckpt2dict,dict2ckpt]
+# ['ckpair2tuple', 'tuple2ckpair', 'ckpair2nv', 'nv2ckpair', 'ckpair2dict', 'dict2ckpair', 'cknv2tuple', 'tuple2cknv', 'cknv2dict', 'dict2cknv', 'ckpt2dict', 'dict2ckpt']
 # [
 #     ckpair2tuple,
 #     tuple2ckpair,
@@ -113,6 +120,7 @@ TYPES = {
 
 def ckpair2tuple(ckpair):
     '''
+        from kukibanshee.drone import *
         ckpair = "TS=0105b666"
         ckpt = ckpair2tuple(ckpair)
         ckpt
@@ -179,7 +187,7 @@ def cknv2tuple(ckname,ckvalue):
 def tuple2cknv(ckpt):
     '''
         ckpt = ("TS","0105b666")
-        ckname,ckvalue = ckpt
+        ckname,ckvalue = tuple2cknv(ckpt)
         ckname
         ckvalue
     '''
@@ -293,7 +301,7 @@ def dict2ckpt(ckpd):
     # dict2ckptl,
     # ckpdl2dict,
     # dict2ckpdl,
-#]
+]
 
 
 #转换规则: 所有结构转换为ckptl , 然后再由ckptl 转换为其他格式
@@ -381,7 +389,7 @@ def ckpl2ptl(ckpl):
         pobj(ckptl)
         #ckpl2tupleList = ckpl2ptl
     '''
-    ckptl = array_map(ckpl,ckpair2tuple)
+    ckptl = elel.array_map(ckpl,ckpair2tuple)
     return(ckptl)
 
 ckpl2tupleList = ckpl2ptl
@@ -393,7 +401,7 @@ def ptl2ckpl(ckptl):
         pobj(ckpl)
         #tupleList2ckpl = ptl2ckpl
     '''
-    ckpl = array_map(ckptl,tuple2ckpair)
+    ckpl = elel.array_map(ckptl,tuple2ckpair)
     return(ckpl)
 
 tupleList2ckpl = ptl2ckpl
@@ -405,7 +413,7 @@ def ckpl2pdl(ckpl):
         pobj(ckpdl)
         #ckpl2dictList = ckpl2pdl
     '''
-    ckpdl = array_map(ckpl,ckpair2dict)
+    ckpdl = elel.array_map(ckpl,ckpair2dict)
     return(ckpdl)
 
 ckpl2dictList = ckpl2pdl
@@ -417,7 +425,7 @@ def pdl2ckpl(ckpdl):
         pobj(ckpl)
         #dictList2ckpl = pdl2ckpl
     '''
-    ckpl = array_map(ckpdl,dict2ckpair)
+    ckpl = elel.array_map(ckpdl,dict2ckpair)
     return(ckpl)
 
 dictList2ckpl = pdl2ckpl
@@ -429,7 +437,7 @@ def ckptl2pdl(ckptl):
         pobj(ckpdl)
         #ckptl2dictList = ckptl2pdl
     '''
-    ckpdl = array_map(ckptl,ckpt2dict)
+    ckpdl = elel.array_map(ckptl,ckpt2dict)
     return(ckpdl)
 
 ckptl2dictList = ckptl2pdl
@@ -441,7 +449,7 @@ def pdl2ckptl(ckpdl):
         pobj(ckptl)
         #dictList2ckptl = pdl2ckptl
     '''
-    ckptl = array_map(ckpdl,dict2ckpt)
+    ckptl = elel.array_map(ckpdl,dict2ckpt)
     return(ckptl)
 
 dictList2ckptl = pdl2ckptl
@@ -604,7 +612,7 @@ def validate_ckptl(ckptl):
         cond1 = rfc6265.is_cookie_name(ckname)
         cond2 = rfc6265.is_cookie_value(ckvalue)
         return(cond1 & cond2)
-    rslt = every(ckptl,test_func)
+    rslt = elel.every(ckptl,test_func)
     print(rslt)
     return(rslt[0])
 
