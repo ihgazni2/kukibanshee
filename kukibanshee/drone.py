@@ -96,8 +96,9 @@ TYPES = {
 #ckpl                  cookie-pair-list           ['BIGipServer=rd19', 'TS013d8ed5=0105b6b0', 'TSPD_101=08819c2a', '__RequestVerificationToken=9VdrIliI', 'ASP.NET_SessionId=epaxjzubchbotfbwr5te1gwf']
 #ckpdl                 cookie-pair-dictList       [{'BIGipServer': 'rd19'}, {'TS013d8ed5': '0105b6b0'}, {'TSPD_101': '08819c2a'}, {'__RequestVerificationToken': '9VdrIliI'}, {'ASP.NET_SessionId': 'epax'}]
 #ckptl                 cookie-pair-tupleList      [('BIGipServer', 'rd19'), ('TS013d8ed5', '0105b6b0'), ('TSPD_101', '08819c2a'), ('__RequestVerificationToken', '9VdrIliI'), ('ASP.NET_SessionId', 'epax')]
-#ckbody                cookie-body                ckstr | ckpl | ckptl | ckpdl
-#ckdict                cookie-dict                
+#ckdict                cookie-dict  
+#ckbody                cookie-body                ckstr | ckpl | ckptl | ckpdl | ckdict
+              
 
 #Part.1  cookie-pair
 #命名规则priority ckpair > cknv > ckpt > ckpd
@@ -229,6 +230,18 @@ def dict2ckpt(ckpd):
         ckpt 
     '''
     return(dict2cknv(ckpd))
+
+#validate_ckpt
+def validate_ckpt(ckpt):
+    '''
+    '''
+    if(type(ckpt) == type(())):
+        ckname,ckvalue = tuple2cknv(ckpt)
+        cond1 = rfc6265.is_cookie_name(ckname)
+        cond2 = rfc6265.is_cookie_value(ckvalue)
+        return(cond1 & cond2)        
+    else:
+        return(False)
 
 #Part.2 cookie-string
 #命名规则priority ckstr > ckpl > ckptl > ckpdl > ckdict
@@ -549,12 +562,7 @@ def validate_ckpl(ckpl):
 def validate_ckptl(ckptl):
     '''
     '''
-    def test_func(ele):
-        ckname,ckvalue = tuple2cknv(ele)
-        cond1 = rfc6265.is_cookie_name(ckname)
-        cond2 = rfc6265.is_cookie_value(ckvalue)
-        return(cond1 & cond2)
-    rslt = elel.every(ckptl,test_func)
+    rslt = elel.every(ckptl,validate_ckpt)
     print(rslt)
     return(rslt[0])
 
@@ -618,7 +626,7 @@ def validate_ckbody(ckbody):
         return(False)
 
 
-#[ckbody2ptl,select_ckbody,convert_ckbody,]
+#[ckbody2ptl,select_ckbody,convert_ckbody,prepend_ckbody,append_ckbody,insert_ckbody]
 
 def ckbody2ptl(ckbody,**kwargs):
     '''
@@ -715,6 +723,7 @@ def convert_ckbody(ckbody,**kwargs):
         return(None)
     return(ckbody)
 
+# 返回ckstr
 def select_ckbody(ckbody,*cknames,**kwargs):
     '''
         ckstr = 'BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
@@ -745,10 +754,70 @@ def select_ckbody(ckbody,*cknames,**kwargs):
     ckstr = ptl2ckstr(selected)
     return(ckstr)
 
-#@@@
-# def prepend_ckbody(ckbody,**kwargs)
-# def append_ckbody(ckbody,**kwargs)
-# def insert_ckbody(ckbody,**kwargs)
+# 单独的ckpair 可以看作ckstr
+# 单独的ckpd   可以看作ckdict
+# 所以只需要判断下 单独ckpt 即可
+def prepend_ckbody(dst_ckbody,src_ckbody,**kwargs):
+    '''
+        dst_ckbody = {'__RequestVerificationToken':'9VdrIliI','ASP.NET_SessionId':'epax'}
+        src_ckbody = 'BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a'
+        ckstr = prepend_ckbody(dst_ckbody,src_ckbody)
+        ckstr
+        #return ckstr, params could be ckdict/ckpl/ckpdl/ckptl/ckstr
+        #attention ckdict cant keep the order!
+        #ckstr include ckpair
+        #ckdict include ckpd
+    '''
+    if(type(src_ckbody) == type(())):
+        src_ckbody = [src_ckbody]
+    else:
+        pass
+    src_ckptl = convert_ckbody(src_ckbody)
+    dst_ckptl = convert_ckbody(dst_ckbody)
+    ckptl = elel.prextend(dst_ckptl,src_ckptl)
+    ckstr = ptl2ckstr(ckptl)
+    return(ckstr)
+
+def append_ckbody(dst_ckbody,src_ckbody,**kwargs):
+    '''
+        dst_ckbody = {'__RequestVerificationToken':'9VdrIliI','ASP.NET_SessionId':'epax'}
+        src_ckbody = 'BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a'
+        ckstr = append_ckbody(dst_ckbody,src_ckbody)
+        ckstr
+        #return ckstr, params could be ckdict/ckpl/ckpdl/ckptl/ckstr
+        #attention ckdict cant keep the order!
+        #ckstr include ckpair
+        #ckdict include ckpd
+    '''
+    if(type(src_ckbody) == type(())):
+        src_ckbody = [src_ckbody]
+    else:
+        pass
+    src_ckptl = convert_ckbody(src_ckbody)
+    dst_ckptl = convert_ckbody(dst_ckbody)
+    ckptl = elel.extend(dst_ckptl,src_ckptl)
+    ckstr = ptl2ckstr(ckptl)
+    return(ckstr)
+
+# def insert_ckbody(dst_ckbody,src_ckbody,location,**kwargs):
+    # '''
+        # dst_ckbody = {'__RequestVerificationToken':'9VdrIliI','ASP.NET_SessionId':'epax'}
+        # src_ckbody = 'BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a'
+        # ckstr = insert_ckbody(dst_ckbody,src_ckbody,1)
+        # ckstr
+        return ckstr, params could be ckdict/ckpl/ckpdl/ckptl/ckstr
+    # '''
+    # if(type(src_ckbody) == type(())):
+        # src_ckbody = [src_ckbody]
+    # else:
+        # pass
+    # src_ckptl = convert_ckbody(src_ckbody)
+    # dst_ckptl = convert_ckbody(dst_ckbody)
+    # ckptl = elel.insert_section(dst_ckptl,src_ckptl)
+    # ckstr = ptl2ckstr(ckptl)
+    # return(ckstr)
+
+
 # def remove_ckbody(ckbody,**kwargs)
 # def pop_ckbody(ckbody,**kwargs)
 # def replace_ckbody(ckbody,**kwargs)
