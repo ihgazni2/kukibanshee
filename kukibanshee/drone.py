@@ -301,7 +301,7 @@ def dict2ckpt(ckpd):
     # dict2ckptl,
     # ckpdl2dict,
     # dict2ckpdl,
-]
+#]
 #['ckstr2pl', 'pl2ckstr', 'ckstr2ptl', 'ptl2ckstr', 'ckstr2pdl', 'pdl2ckstr', 'ckpl2ptl', 'ptl2ckpl', 'ckpl2pdl', 'pdl2ckpl', 'ckptl2pdl', 'pdl2ckptl', 'ckstr2list', 'list2ckstr', 'ckstr2tupleList', 'tupleList2ckstr', 'ckstr2dictList', 'dictList2ckstr', 'ckpl2tupleList', 'tupleList2ckpl', 'ckpl2dictList', 'dictList2ckpl', 'ckptl2dictList', 'dictList2ckptl', 'ckstr2dict', 'dict2ckstr', 'ckpl2dict', 'dict2ckpl', 'ckptl2dict', 'dict2ckptl', 'ckpdl2dict', 'dict2ckpdl']
 
 
