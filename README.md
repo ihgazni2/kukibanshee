@@ -85,6 +85,10 @@
 ├──36. [validate_ckdict](kukibanshee/Images/validate_ckdict.0.png)  <br>
 ├──37. [detect_ckbody](kukibanshee/Images/detect_ckbody.0.png)  <br>
 ├──38. [validate_ckbody](kukibanshee/Images/validate_ckbody.0.png)  <br>
+├──39. [ckbody2ptl](kukibanshee/Images/ckbody2ptl.0.png)  <br>
+├──40. [convert_ckbody](kukibanshee/Images/convert_ckbody.0.png)  <br>
+├──41. [select_ckbody](kukibanshee/Images/select_ckbody.0.png)  <br>
+
 
 -----------------------------------------------------------------------
 
