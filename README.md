@@ -88,6 +88,10 @@
 ├──39. [ckbody2ptl](kukibanshee/Images/ckbody2ptl.0.png)  <br>
 ├──40. [convert_ckbody](kukibanshee/Images/convert_ckbody.0.png)  <br>
 ├──41. [select_ckbody](kukibanshee/Images/select_ckbody.0.png)  <br>
+├──42. [prepend_ckbody](kukibanshee/Images/prepend_ckbody.0.png)  <br>
+├──43. [append_ckbody](kukibanshee/Images/append_ckbody.0.png)  <br>
+├──44. [prepend_ckbody](kukibanshee/Images/prepend_ckbody.0.png)  <br>
+├──45. [insert_ckbody](kukibanshee/Images/insert_ckbody.0.png)  <br>
 
 
 -----------------------------------------------------------------------
