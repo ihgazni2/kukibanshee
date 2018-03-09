@@ -799,23 +799,23 @@ def append_ckbody(dst_ckbody,src_ckbody,**kwargs):
     ckstr = ptl2ckstr(ckptl)
     return(ckstr)
 
-# def insert_ckbody(dst_ckbody,src_ckbody,location,**kwargs):
-    # '''
-        # dst_ckbody = {'__RequestVerificationToken':'9VdrIliI','ASP.NET_SessionId':'epax'}
-        # src_ckbody = 'BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a'
-        # ckstr = insert_ckbody(dst_ckbody,src_ckbody,1)
-        # ckstr
+def insert_ckbody(dst_ckbody,src_ckbody,location,**kwargs):
+    '''
+        dst_ckbody = '__RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+        src_ckbody = 'BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a'
+        ckstr = insert_ckbody(dst_ckbody,src_ckbody,1)
+        ckstr
         # return ckstr, params could be ckdict/ckpl/ckpdl/ckptl/ckstr
-    # '''
-    # if(type(src_ckbody) == type(())):
-        # src_ckbody = [src_ckbody]
-    # else:
-        # pass
-    # src_ckptl = convert_ckbody(src_ckbody)
-    # dst_ckptl = convert_ckbody(dst_ckbody)
-    # ckptl = elel.insert_section(dst_ckptl,src_ckptl)
-    # ckstr = ptl2ckstr(ckptl)
-    # return(ckstr)
+    '''
+    if(type(src_ckbody) == type(())):
+        src_ckbody = [src_ckbody]
+    else:
+        pass
+    src_ckptl = convert_ckbody(src_ckbody)
+    dst_ckptl = convert_ckbody(dst_ckbody)
+    ckptl = elel.insert_section(dst_ckptl,src_ckptl,location)
+    ckstr = ptl2ckstr(ckptl)
+    return(ckstr)
 
 
 # def remove_ckbody(ckbody,**kwargs)
