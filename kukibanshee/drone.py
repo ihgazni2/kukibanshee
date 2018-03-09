@@ -301,7 +301,7 @@ def dict2ckpt(ckpd):
     # dict2ckptl,
     # ckpdl2dict,
     # dict2ckpdl,
-]
+#]
 
 
 #转换规则: 所有结构转换为ckptl , 然后再由ckptl 转换为其他格式
