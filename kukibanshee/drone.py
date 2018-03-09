@@ -805,7 +805,7 @@ def append_ckbody(dst_ckbody,src_ckbody,**kwargs):
         # src_ckbody = 'BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a'
         # ckstr = insert_ckbody(dst_ckbody,src_ckbody,1)
         # ckstr
-        return ckstr, params could be ckdict/ckpl/ckpdl/ckptl/ckstr
+        # return ckstr, params could be ckdict/ckpl/ckpdl/ckptl/ckstr
     # '''
     # if(type(src_ckbody) == type(())):
         # src_ckbody = [src_ckbody]
