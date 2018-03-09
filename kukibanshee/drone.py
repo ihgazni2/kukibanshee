@@ -301,7 +301,8 @@ def dict2ckpt(ckpd):
     # dict2ckptl,
     # ckpdl2dict,
     # dict2ckpdl,
-#]
+]
+#['ckstr2pl', 'pl2ckstr', 'ckstr2ptl', 'ptl2ckstr', 'ckstr2pdl', 'pdl2ckstr', 'ckpl2ptl', 'ptl2ckpl', 'ckpl2pdl', 'pdl2ckpl', 'ckptl2pdl', 'pdl2ckptl', 'ckstr2list', 'list2ckstr', 'ckstr2tupleList', 'tupleList2ckstr', 'ckstr2dictList', 'dictList2ckstr', 'ckpl2tupleList', 'tupleList2ckpl', 'ckpl2dictList', 'dictList2ckpl', 'ckptl2dictList', 'dictList2ckptl', 'ckstr2dict', 'dict2ckstr', 'ckpl2dict', 'dict2ckpl', 'ckptl2dict', 'dict2ckptl', 'ckpdl2dict', 'dict2ckpdl']
 
 
 #转换规则: 所有结构转换为ckptl , 然后再由ckptl 转换为其他格式
@@ -529,69 +530,10 @@ def dict2ckpdl(ckdict):
     ckpdl = ckptl2pdl(ckptl)
     return(ckpdl)
 
-#Part.3
-#命名规则 priority ckheader > ckbody >ckstr > ckpl > ckptl > ckpdl >ckdict
-
-
-def split_ckheader(ckheader,**kwargs):
-    '''
-        ckheader = "Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax"
-        pobj(split_ckheader(ckheader))
-        pobj(split_ckheader(ckheader,mode='ckstr'))
-        pobj(split_ckheader(ckheader,mode='ckpl'))
-        pobj(split_ckheader(ckheader,mode='ckptl'))
-        pobj(split_ckheader(ckheader,mode='ckpdl'))
-    '''
-    if('mode' in kwargs):
-        mode = kwargs['mode']
-    else:
-        mode = 'ckptl'
-    cktype,ckstr = tuple(ckheader.split(SEPARATORS['ckheader']))
-    if(mode == 'ckstr'):
-        return({'cktype':cktype,'ckstr':ckstr})
-    elif(mode == 'ckpl'):
-        ckpl = ckstr2pl(ckstr)
-        return({'cktype':cktype,'ckpl':ckpl})
-    elif(mode == 'ckptl'):
-        ckptl = ckstr2ptl(ckstr)
-        return({'cktype':cktype,'ckptl':ckptl})
-    elif(mode == 'ckpdl'):
-        ckpdl = ckstr2pdl(ckstr)
-        return({'cktype':cktype,'ckpdl':ckpdl})
-    else:
-        print("unknow mode")
-        return(None)
-
-def detect_ckbody(ckbody):
-    '''
-        ckstr = 'BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
-        ckpl = ['BIGipServer=rd19', 'TS013d8ed5=0105b6b0', 'TSPD_101=08819c2a', '__RequestVerificationToken=9VdrIliI', 'ASP.NET_SessionId=epax']
-        ckptl = [('BIGipServer', 'rd19'), ('TS013d8ed5', '0105b6b0'), ('TSPD_101', '08819c2a'), ('__RequestVerificationToken', '9VdrIliI'), ('ASP.NET_SessionId', 'epax')]
-        ckpdl = [{'BIGipServer': 'rd19'}, {'TS013d8ed5': '0105b6b0'}, {'TSPD_101': '08819c2a'}, {'__RequestVerificationToken': '9VdrIliI'}, {'ASP.NET_SessionId': 'epax'}]
-        ckdict = {'__RequestVerificationToken': '9VdrIliI', 'ASP.NET_SessionId': 'epax', 'BIGipServer': 'rd19', 'TS013d8ed5': '0105b6b0', 'TSPD_101': '08819c2a'}
-        detect_ckbody(ckstr)
-        detect_ckbody(ckpl)
-        detect_ckbody(ckptl)
-        detect_ckbody(ckpdl)
-        detect_ckbody(ckdict)
-    '''
-    if(type(ckbody) == type('')):
-        return('ckstr')
-    elif(type(ckbody) == type([])):
-        if(type(ckbody[0]) == type('')):
-            return('ckpl')
-        elif(type(ckbody[0]) == type(())):
-            return('ckptl')
-        elif(type(ckbody[0]) == type(dict({}))):
-            return('ckpdl')
-        else:
-            return('unknown')
-    elif(type(ckbody) == type(dict())):
-        return('ckdict')
-    else:
-        return('unknown')
-
 ######wait to implement
+# [validate_ckstr,validate_ckpl,validate_ckptl,validate_ckpdl,validate_ckdict,detect_ckbody,validate_ckbody]
+# ['validate_ckstr', 'validate_ckpl', 'validate_ckptl', 'validate_ckpdl', 'validate_ckdict', 'detect_ckbody', 'validate_ckbody']
+
 def validate_ckstr(ckstr):
     '''
     '''
@@ -628,6 +570,35 @@ def validate_ckdict(ckdict):
     ckptl = dict2ckptl(ckdict)
     return(validate_ckptl(ckptl))
 
+def detect_ckbody(ckbody):
+    '''
+        ckstr = 'BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+        ckpl = ['BIGipServer=rd19', 'TS013d8ed5=0105b6b0', 'TSPD_101=08819c2a', '__RequestVerificationToken=9VdrIliI', 'ASP.NET_SessionId=epax']
+        ckptl = [('BIGipServer', 'rd19'), ('TS013d8ed5', '0105b6b0'), ('TSPD_101', '08819c2a'), ('__RequestVerificationToken', '9VdrIliI'), ('ASP.NET_SessionId', 'epax')]
+        ckpdl = [{'BIGipServer': 'rd19'}, {'TS013d8ed5': '0105b6b0'}, {'TSPD_101': '08819c2a'}, {'__RequestVerificationToken': '9VdrIliI'}, {'ASP.NET_SessionId': 'epax'}]
+        ckdict = {'__RequestVerificationToken': '9VdrIliI', 'ASP.NET_SessionId': 'epax', 'BIGipServer': 'rd19', 'TS013d8ed5': '0105b6b0', 'TSPD_101': '08819c2a'}
+        detect_ckbody(ckstr)
+        detect_ckbody(ckpl)
+        detect_ckbody(ckptl)
+        detect_ckbody(ckpdl)
+        detect_ckbody(ckdict)
+    '''
+    if(type(ckbody) == type('')):
+        return('ckstr')
+    elif(type(ckbody) == type([])):
+        if(type(ckbody[0]) == type('')):
+            return('ckpl')
+        elif(type(ckbody[0]) == type(())):
+            return('ckptl')
+        elif(type(ckbody[0]) == type(dict({}))):
+            return('ckpdl')
+        else:
+            return('unknown')
+    elif(type(ckbody) == type(dict())):
+        return('ckdict')
+    else:
+        return('unknown')
+
 def validate_ckbody(ckbody):
     '''
     '''
@@ -645,18 +616,22 @@ def validate_ckbody(ckbody):
     else:
         print("unknow mode")
         return(False)
-####
 
-def cons_ckheader(ckbody,**kwargs):
+
+#[ckbody2ptl,select_ckbody,convert_ckbody,]
+
+def ckbody2ptl(ckbody,**kwargs):
     '''
         ckstr = 'BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
         ckpl = ['BIGipServer=rd19', 'TS013d8ed5=0105b6b0', 'TSPD_101=08819c2a', '__RequestVerificationToken=9VdrIliI', 'SP.NET_SessionId=epax']
         ckptl = [('BIGipServer', 'rd19'), ('TS013d8ed5', '0105b6b0'), ('TSPD_101', '08819c2a'), ('__RequestVerificationToken', '9VdrIliI'), ('ASP.NET_SessionId', 'epax')]
         ckpdl = [{'BIGipServer': 'rd19'}, {'TS013d8ed5': '0105b6b0'}, {'TSPD_101': '08819c2a'}, {'__RequestVerificationToken': '9VdrIliI'}, {'ASP.NET_SessionId': 'epax'}]
-        cons_ckheader(ckstr)
-        cons_ckheader(ckpl)
-        cons_ckheader(ckptl)
-        cons_ckheader(ckpdl)
+        ckdict = {'__RequestVerificationToken': '9VdrIliI', 'ASP.NET_SessionId': 'epax', 'BIGipServer': 'rd19', 'TS013d8ed5': '0105b6b0', 'TSPD_101': '08819c2a'}
+        ckbody2ptl(ckstr)
+        ckbody2ptl(ckpl)
+        ckbody2ptl(ckptl)
+        ckbody2ptl(ckpdl)
+        ckbody2ptl(ckdict)
     '''
     if('validate' in kwargs):
         valid = validate_ckbody(ckbody)
@@ -666,7 +641,196 @@ def cons_ckheader(ckbody,**kwargs):
         pass
     else:
         print('invalid ckbody')
-        return('')
+        return(None)
+    mode = detect_ckbody(ckbody)
+    if(mode == 'ckstr'):
+        ckptl = ckstr2ptl(ckbody)
+    elif(mode == 'ckpl'):
+        ckptl = ckpl2ptl(ckbody)
+    elif(mode == 'ckptl'):
+        ckptl = ckbody
+    elif(mode == 'ckpdl'):
+        ckptl = pdl2ckptl(ckbody)
+    elif(mode == 'ckdict'):
+        ckptl = dict2ckptl(ckbody)
+    else:
+        print("unknow mode")
+        return(None)
+    return(ckptl)
+
+def convert_ckbody(ckbody,**kwargs):
+    '''
+        ckstr = 'BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+        ckpl = ['BIGipServer=rd19', 'TS013d8ed5=0105b6b0', 'TSPD_101=08819c2a', '__RequestVerificationToken=9VdrIliI', 'SP.NET_SessionId=epax']
+        ckptl = [('BIGipServer', 'rd19'), ('TS013d8ed5', '0105b6b0'), ('TSPD_101', '08819c2a'), ('__RequestVerificationToken', '9VdrIliI'), ('ASP.NET_SessionId', 'epax')]
+        ckpdl = [{'BIGipServer': 'rd19'}, {'TS013d8ed5': '0105b6b0'}, {'TSPD_101': '08819c2a'}, {'__RequestVerificationToken': '9VdrIliI'}, {'ASP.NET_SessionId': 'epax'}]
+        ckdict = {'__RequestVerificationToken': '9VdrIliI', 'ASP.NET_SessionId': 'epax', 'BIGipServer': 'rd19', 'TS013d8ed5': '0105b6b0', 'TSPD_101': '08819c2a'}
+        convert_ckbody(ckstr)
+        ckbody = convert_ckbody(ckpl,mode='ckdict')
+        pobj(ckbody)
+        convert_ckbody(ckptl,mode='ckpdl')
+        convert_ckbody(ckpdl,mode='ckstr')
+        ckbody = convert_ckbody(ckdict,mode='ckpl')
+        elel.forEach(ckbody,print)
+    '''
+    if('validate' in kwargs):
+        valid = validate_ckbody(ckbody)
+    else:
+        valid = True
+    if(valid):
+        pass
+    else:
+        print('invalid ckbody')
+        return(None)
+    mode = detect_ckbody(ckbody)
+    if(mode == 'ckstr'):
+        ckptl = ckstr2ptl(ckbody)
+    elif(mode == 'ckpl'):
+        ckptl = ckpl2ptl(ckbody)
+    elif(mode == 'ckptl'):
+        ckptl = ckbody
+    elif(mode == 'ckpdl'):
+        ckptl = pdl2ckptl(ckbody)
+    elif(mode == 'ckdict'):
+        ckptl = dict2ckptl(ckbody)
+    else:
+        print("unknow mode")
+        return(None)
+    if('mode' in kwargs):
+        to_mode = kwargs['mode']
+    else:
+        to_mode = 'ckptl'
+    if(to_mode == 'ckstr'):
+        ckbody = ptl2ckstr(ckptl)
+    elif(to_mode == 'ckpl'):
+        ckbody = ptl2ckpl(ckptl)
+    elif(to_mode == 'ckptl'):
+        ckbody = ckptl
+    elif(to_mode == 'ckpdl'):
+        ckbody = ckptl2pdl(ckptl)
+    elif(to_mode == 'ckdict'):
+        ckbody = ckptl2dict(ckptl)
+    else:
+        print("unknow mode")
+        return(None)
+    return(ckbody)
+
+def select_ckbody(ckbody,*cknames,**kwargs):
+    '''
+        ckstr = 'BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+        selected = select_ckbody(ckstr,'BIGipServer','TSPD_101')
+        selected 
+        selected = select_ckbody(ckstr,'TSPD_101','BIGipServer')
+        ckdict = ckstr2dict(selected)
+        pobj(ckdict)
+        #select_ckbody,via ckname, allow duplecate, return ckstr
+    '''
+    def via_ckname(ele,cknames):
+        ckname = ele[0]
+        cond = (ckname in cknames)
+        return(cond)
+    if('validate' in kwargs):
+        valid = validate_ckbody(ckbody)
+    else:
+        valid = True
+    if(valid):
+        pass
+    else:
+        print('invalid ckbody')
+        return(None)
+    cknames = list(cknames)
+    ckptl = ckbody2ptl(ckbody)
+    selected = elel.find_all(ckptl,via_ckname,cknames)
+    selected = elel.array_map(selected,lambda ele:ele['value'])
+    ckstr = ptl2ckstr(selected)
+    return(ckstr)
+
+#@@@
+# def prepend_ckbody(ckbody,**kwargs)
+# def append_ckbody(ckbody,**kwargs)
+# def insert_ckbody(ckbody,**kwargs)
+# def remove_ckbody(ckbody,**kwargs)
+# def pop_ckbody(ckbody,**kwargs)
+# def replace_ckbody(ckbody,**kwargs)
+# def uniqulize_ckbody(ckbody,**kwargs)
+
+
+
+#Part.3
+#命名规则 priority ckheader > ckbody >ckstr > ckpl > ckptl > ckpdl >ckdict
+# 
+####
+
+def split_ckheader(ckheader,**kwargs):
+    '''
+        ckheader = "Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax"
+        pobj(split_ckheader(ckheader))
+        pobj(split_ckheader(ckheader,mode='ckstr'))
+        pobj(split_ckheader(ckheader,mode='ckpl'))
+        pobj(split_ckheader(ckheader,mode='ckptl'))
+        pobj(split_ckheader(ckheader,mode='ckpdl'))
+        pobj(split_ckheader(ckheader,mode='ckdict'))
+    '''
+    if('mode' in kwargs):
+        mode = kwargs['mode']
+    else:
+        mode = 'ckptl'
+    cktype,ckstr = tuple(ckheader.split(SEPARATORS['ckheader']))
+    if(mode == 'ckstr'):
+        return({'cktype':cktype,'ckstr':ckstr})
+    elif(mode == 'ckpl'):
+        ckpl = ckstr2pl(ckstr)
+        return({'cktype':cktype,'ckpl':ckpl})
+    elif(mode == 'ckptl'):
+        ckptl = ckstr2ptl(ckstr)
+        return({'cktype':cktype,'ckptl':ckptl})
+    elif(mode == 'ckpdl'):
+        ckpdl = ckstr2pdl(ckstr)
+        return({'cktype':cktype,'ckpdl':ckpdl})
+    elif(mode == 'ckdict'):
+        ckdict = ckstr2dict(ckbody)
+        return({'cktype':cktype,'ckdict':ckdict})
+    else:
+        print("unknow mode")
+        return(None)
+
+def validate_ckheader(ckheader):
+    '''
+    '''
+    cktype,ckstr = tuple(ckheader.split(SEPARATORS['ckheader']))
+    cond1 = (cktype == TYPES['cktype'])
+    if(cond1):
+        cond2 = validate_ckstr(ckstr)
+        if(cond2):
+            return(True)
+        else:
+            return(False)
+    else:
+        print("cktype wrong!")
+        return(False)
+
+def cons_ckheader(ckbody,**kwargs):
+    '''
+        ckstr = 'BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+        ckpl = ['BIGipServer=rd19', 'TS013d8ed5=0105b6b0', 'TSPD_101=08819c2a', '__RequestVerificationToken=9VdrIliI', 'SP.NET_SessionId=epax']
+        ckptl = [('BIGipServer', 'rd19'), ('TS013d8ed5', '0105b6b0'), ('TSPD_101', '08819c2a'), ('__RequestVerificationToken', '9VdrIliI'), ('ASP.NET_SessionId', 'epax')]
+        ckpdl = [{'BIGipServer': 'rd19'}, {'TS013d8ed5': '0105b6b0'}, {'TSPD_101': '08819c2a'}, {'__RequestVerificationToken': '9VdrIliI'}, {'ASP.NET_SessionId': 'epax'}]
+        ckdict = {'__RequestVerificationToken': '9VdrIliI', 'ASP.NET_SessionId': 'epax', 'BIGipServer': 'rd19', 'TS013d8ed5': '0105b6b0', 'TSPD_101': '08819c2a'}
+        cons_ckheader(ckstr)
+        cons_ckheader(ckpl)
+        cons_ckheader(ckptl)
+        cons_ckheader(ckpdl)
+        cons_ckheader(ckdict)
+    '''
+    if('validate' in kwargs):
+        valid = validate_ckbody(ckbody)
+    else:
+        valid = True
+    if(valid):
+        pass
+    else:
+        print('invalid ckbody')
+        return(None)
     mode = detect_ckbody(ckbody)
     if(mode == 'ckstr'):
         ckstr = ckbody
@@ -676,6 +840,8 @@ def cons_ckheader(ckbody,**kwargs):
         ckstr = ptl2ckstr(ckbody)
     elif(mode == 'ckpdl'):
         ckstr = pdl2ckstr(ckbody)
+    elif(mode == 'ckdict'):
+        ckstr = dict2ckstr(ckbody)
     else:
         print("unknow mode")
         return(None)
