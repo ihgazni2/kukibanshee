@@ -92,6 +92,8 @@
 ├──43. [append_ckbody](kukibanshee/Images/append_ckbody.0.png)  <br>
 ├──44. [prepend_ckbody](kukibanshee/Images/prepend_ckbody.0.png)  <br>
 ├──45. [insert_ckbody](kukibanshee/Images/insert_ckbody.0.png)  <br>
+├──46. [remove_ckbody](kukibanshee/Images/remove_ckbody.0.png)  <br>
+
 
 
 -----------------------------------------------------------------------
