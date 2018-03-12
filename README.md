@@ -117,6 +117,8 @@
 ├──0. [split_ckheader\<4\>](kukibanshee/Images/split_ckheader.4.png)  <br>
 ├──1. [cons_ckheader](kukibanshee/Images/cons_ckheader.0.png)  <br>
 ├──2. [validate_ckheader](kukibanshee/Images/validate_ckheader.0.png)  <br>
+├──3. [is_ckheader](kukibanshee/Images/is_ckheader.0.png)  <br>
+
 
 
 
