@@ -24,7 +24,7 @@
 
 -----------------------------------------------------------------------
 
-## cookie-pair
+## cookie-element
 
 -----------------------------------------------------------------------
 >├──0. [ckpair2tuple](kukibanshee/Images/ckpair2tuple.0.png)  <br>
@@ -40,6 +40,12 @@
 ├──10. [ckpt2dict](kukibanshee/Images/ckpt2dict.0.png)  <br>
 ├──11. [dict2ckpt](kukibanshee/Images/dict2ckpt.0.png)  <br>
 ├──12. [validate_ckpt](kukibanshee/Images/validate_ckpt.0.png)  <br>
+├──13. [validate_ckpd](kukibanshee/Images/validate_ckpd.0.png)  <br>
+├──14. [validate_ckpair](kukibanshee/Images/validate_ckpair.0.png)  <br>
+├──15. [validate_cknv](kukibanshee/Images/validate_cknv.0.png)  <br>
+├──16. [validate_ckele](kukibanshee/Images/validate_ckele.0.png)  <br>
+
+
 
 -----------------------------------------------------------------------
 
