@@ -85,7 +85,7 @@ TYPES = {
 }
 
 #ckheader              cookie-header              "Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax"
-#cktype                coookie-type               "Cookie"
+#cktype                cookie-type                "Cookie"
 #ckstr                 cookie-string              "BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epaxjzubchbotfbwr5te1gwf"
 #ckpair                cookie-pair                "TS=0105b666"
 #ckname                cookie-name                "TS"
@@ -93,6 +93,7 @@ TYPES = {
 #cknv                  cookie-name-and-value      "TS","0105b666"
 #ckpt                  cookie-pairTuple           ("TS","0105b666")
 #ckpd                  cookie-pairDict            {"TS":"0105b666"}
+#ckele                 cookie-element             ckpair | cknv | ckpt | ckpd
 #ckpl                  cookie-pair-list           ['BIGipServer=rd19', 'TS013d8ed5=0105b6b0', 'TSPD_101=08819c2a', '__RequestVerificationToken=9VdrIliI', 'ASP.NET_SessionId=epaxjzubchbotfbwr5te1gwf']
 #ckpdl                 cookie-pair-dictList       [{'BIGipServer': 'rd19'}, {'TS013d8ed5': '0105b6b0'}, {'TSPD_101': '08819c2a'}, {'__RequestVerificationToken': '9VdrIliI'}, {'ASP.NET_SessionId': 'epax'}]
 #ckptl                 cookie-pair-tupleList      [('BIGipServer', 'rd19'), ('TS013d8ed5', '0105b6b0'), ('TSPD_101', '08819c2a'), ('__RequestVerificationToken', '9VdrIliI'), ('ASP.NET_SessionId', 'epax')]
@@ -101,7 +102,7 @@ TYPES = {
               
 
 #Part.1  cookie-pair
-#命名规则priority ckpair > cknv > ckpt > ckpd
+#命名规则priority ckele > ckpair > cknv > ckpt > ckpd
 #[ckpair2tuple,tuple2ckpair,ckpair2nv,nv2ckpair,ckpair2dict,dict2ckpair,cknv2tuple,tuple2cknv,cknv2dict,dict2cknv,ckpt2dict,dict2ckpt]
 # ['ckpair2tuple', 'tuple2ckpair', 'ckpair2nv', 'nv2ckpair', 'ckpair2dict', 'dict2ckpair', 'cknv2tuple', 'tuple2cknv', 'cknv2dict', 'dict2cknv', 'ckpt2dict', 'dict2ckpt']
 # [
@@ -242,6 +243,138 @@ def validate_ckpt(ckpt):
         return(cond1 & cond2)        
     else:
         return(False)
+
+def validate_ckpd(ckpd):
+    ckpt = dict2ckpt(ckpd)
+    return(validate_ckpt(ckpt))
+
+def validate_ckpair(ckpair):
+    ckpt = ckpair2tuple(ckpair)
+    return(validate_ckpt(ckpt))
+
+def validate_cknv(ckname,ckvalue):
+    ckpt = cknv2tuple(ckname,ckvalue)
+    return(validate_ckpt(ckpt))
+
+def validate_ckele(ckele,*args):
+    ckpt = ckele2pt(ckele,*args)
+    return(validate_ckpt(ckpt))
+
+#cookie-element
+def detect_ckele(ckele,*args):
+    '''
+        ckele = "TS=0105b666"
+        detect_ckele(ckele)
+        ckele = ("TS","0105b666")
+        detect_ckele(ckele)
+        ckele = {"TS": "0105b666"}
+        detect_ckele(ckele)
+        ckname = "TS"
+        ckvalue = "0105b666"
+        detect_ckele(ckname,ckvalue)
+    '''
+    length = args.__len__()
+    if(length == 0):
+        if(type(ckele) == type('')):
+            return('ckpair')
+        elif(type(ckele) == type(())):
+            return('ckpt')
+        elif(type(ckele) == type(dict({}))):
+            return('ckpd')
+        else:
+            return('unknown')
+    elif(length == 1):
+        return('cknv')
+    else:
+        return('unknown')
+
+def ckele2pt(ckele,*args):
+    '''
+        ckele = "TS=0105b666"
+        ckpt = ckele2pt(ckele)
+        pobj(ckpt)
+        ckele = ("TS","0105b666")
+        ckpt = ckele2pt(ckele)
+        pobj(ckpt)
+        ckele = {"TS": "0105b666"}
+        ckpt = ckele2pt(ckele)
+        pobj(ckpt)
+        ckname = "TS"
+        ckvalue = "0105b666"
+        ckpt = ckele2pt(ckname,ckvalue)
+        pobj(ckpt)
+    '''
+    mode = detect_ckele(ckele,*args)
+    if(mode == 'ckpair'):
+        ckpt = ckpair2tuple(ckele)
+    elif(mode == 'ckpt'):
+        ckpt = ckele
+    elif(mode == 'ckpd'):
+        ckpt = dict2ckpt(ckele)
+    elif(mode == 'ckname'):
+        return(ckele,args[0])
+    else:
+        print("unknown ")
+        return(None)
+    return(ckpt)
+
+#
+def convert_ckele(ckele,*args,**kwargs):
+    '''
+        ckele = "TS=0105b666"
+        ckpt = convert_ckele(ckele,mode='ckpt')
+        pobj(ckpt)
+        ckele = ("TS","0105b666")
+        ckpair = convert_ckele(ckele,mode='ckpair')
+        pobj(ckpair)
+        ckele = {"TS": "0105b666"}
+        ckname,ckvalue = convert_ckele(ckele,mode='cknv')
+        ckname
+        ckvalue
+        ckname = "TS"
+        ckvalue = "0105b666"
+        ckpd = convert_ckele(ckname,ckvalue,mode='ckpd')
+        pobj(ckpd)
+    '''
+    if('validate' in kwargs):
+        valid = validate_ckele(ckele)
+    else:
+        valid = True
+    if(valid):
+        pass
+    else:
+        print('invalid ckele')
+        return(None)
+    mode = detect_ckele(ckele,*args)
+    if(mode == 'ckpair'):
+        ckpt = ckpair2tuple(ckele)
+    elif(mode == 'ckpt'):
+        ckpt = ckele
+    elif(mode == 'ckpd'):
+        ckpt = dict2ckpt(ckele)
+    elif(mode == 'cknv'):
+        ckpt = cknv2tuple(ckele,args[0])
+    else:
+        print("unknow mode")
+        return(None)
+    if('mode' in kwargs):
+        to_mode = kwargs['mode']
+    else:
+        to_mode = 'ckpt'
+    if(to_mode == 'ckpair'):
+        ckele = tuple2ckpair(ckpt)
+    elif(to_mode == 'ckpt'):
+        ckele = ckpt
+    elif(to_mode == 'ckpd'):
+        ckele = ckpt2dict(ckpt)
+    elif(to_mode == 'cknv'):
+        ckname,ckvalue = tuple2cknv(ckpt)
+        return((ckname,ckvalue))
+    else:
+        print("unknow mode")
+        return(None)
+    return(ckele)
+
 
 #Part.2 cookie-string
 #命名规则priority ckstr > ckpl > ckptl > ckpdl > ckdict
@@ -626,7 +759,7 @@ def validate_ckbody(ckbody):
         return(False)
 
 
-#[ckbody2ptl,select_ckbody,convert_ckbody,prepend_ckbody,append_ckbody,insert_ckbody]
+#[ckbody2ptl,select_ckbody,convert_ckbody,prepend_ckbody,append_ckbody,insert_ckbody,remove_ckbody]
 
 def ckbody2ptl(ckbody,**kwargs):
     '''
@@ -817,17 +950,153 @@ def insert_ckbody(dst_ckbody,src_ckbody,location,**kwargs):
     ckstr = ptl2ckstr(ckptl)
     return(ckstr)
 
+def remove_ckbody(ckbody,ckname,**kwargs):
+    '''
+        ckstr = 'BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; TS013d8ed5=0105b6b0; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+        lefted = remove_ckbody(ckstr,'TS013d8ed5')
+        lefted 
+        ckdict = ckstr2dict(lefted)
+        pobj(ckdict)
+        ckstr = 'BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; TS013d8ed5=0105b6b0; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+        lefted = remove_ckbody(ckstr,'TS013d8ed5',which=1)
+        lefted 
+        ckdict = ckstr2dict(lefted)
+        pobj(ckdict)
+        #remove_ckbody,via ckname, allow duplecate, return ckstr,by default remove_all
+    '''
+    def via_ckname(ele,ckname):
+        cond = (ckname ==  ele[0])
+        return(cond)
+    if('validate' in kwargs):
+        valid = validate_ckbody(ckbody)
+    else:
+        valid = True
+    if(valid):
+        pass
+    else:
+        print('invalid ckbody')
+        return(None)
+    if('which' in kwargs):
+        which = kwargs['which']
+    else:
+        which = None
+    ckptl = ckbody2ptl(ckbody)
+    if(which == None):
+        lefted = elel.cond_remove_all(ckptl,cond_func=via_ckname,cond_func_args=[ckname])
+    else:
+        lefted = elel.cond_remove_some(ckptl,which,cond_func=via_ckname,cond_func_args=[ckname])
+    ckstr = ptl2ckstr(lefted)
+    return(ckstr)
 
-# def remove_ckbody(ckbody,**kwargs)
-# def pop_ckbody(ckbody,**kwargs)
-# def replace_ckbody(ckbody,**kwargs)
-# def uniqulize_ckbody(ckbody,**kwargs)
+def replace_ckbody(ckbody,ckname,ckele,*args,**kwargs):
+    '''
+        ckstr = 'BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; TS013d8ed5=0105b6b0; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+        replaced = replace_ckbody(ckstr,'TS013d8ed5','TSreplace=replace')
+        replaced 
+        replaced = replace_ckbody(ckstr,'TS013d8ed5',('TSreplace','replace'))
+        replaced 
+        replaced = replace_ckbody(ckstr,'TS013d8ed5',{'TSreplace':'replace'})
+        replaced 
+        replaced = replace_ckbody(ckstr,'TS013d8ed5','TSreplace','replace')
+        replaced 
+        ####
+        ckstr = 'BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; TS013d8ed5=0105b6b0; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+        replaced = replace_ckbody(ckstr,'TS013d8ed5','TSreplace=replace',which=0)
+        replaced 
+        replaced = replace_ckbody(ckstr,'TS013d8ed5',('TSreplace','replace'),which=1)
+        replaced 
+        replaced = replace_ckbody(ckstr,'TS013d8ed5',{'TSreplace':'replace'},which=0)
+        replaced 
+        replaced = replace_ckbody(ckstr,'TS013d8ed5','TSreplace','replace',which=1)
+        replaced 
+        #replace_ckbody,via ckname, allow duplecate, return ckstr,by default replace_all
+    '''
+    def via_ckname(ele,ckname):
+        cond = (ckname ==  ele[0])
+        return(cond)
+    if('validate' in kwargs):
+        valid = validate_ckbody(ckbody)
+    else:
+        valid = True
+    if(valid):
+        pass
+    else:
+        print('invalid ckbody')
+        return(None)
+    if('which' in kwargs):
+        which = kwargs['which']
+    else:
+        which = None
+    ckptl = ckbody2ptl(ckbody)
+    ckpt  = convert_ckele(ckele,*args)
+    selected = elel.find_all(ckptl,via_ckname,ckname)
+    selected_indexes = elel.array_map(selected,lambda ele:ele['index'])
+    if(which == None):
+        replaced = elel.replace_seqs(ckptl,ckpt,selected_indexes)
+    else:
+        index = selected_indexes[which]
+        ckptl[index] = ckpt
+        replaced = ckptl
+    ckstr = ptl2ckstr(replaced)
+    return(ckstr)
 
+def uniqualize_ckbody(ckbody,*cknames,**kwargs):
+    '''
+        ckstr = 'BIGipServer=rd0; TS013d8ed5=T0; BIGipServer=rd1; TS013d8ed5=T1; SID=0; SID=1'
+        uniqulized = uniqualize_ckbody(ckstr)
+        uniqulized
+        
+        ckstr = 'BIGipServer=rd0; TS013d8ed5=T0; BIGipServer=rd1; TS013d8ed5=T1; SID=0; SID=1'
+        reserved = {'BIGipServer':1,'TS013d8ed5':0,'SID':1}
+        uniqulized = uniqualize_ckbody(ckstr,reserved = reserved)
+        uniqulized 
+        
+        ckstr = 'BIGipServer=rd0; TS013d8ed5=T0; BIGipServer=rd1; TS013d8ed5=T1; SID=0; SID=1'
+        uniqulized = uniqualize_ckbody(ckstr,'BIGipServer','TS013d8ed5')
+        uniqulized 
+        
+        ckstr = 'BIGipServer=rd0; TS013d8ed5=T0; BIGipServer=rd1; TS013d8ed5=T1; SID=0; SID=1'
+        reserved = {'BIGipServer':1,'TS013d8ed5':0}
+        uniqulized = uniqualize_ckbody(ckstr,'BIGipServer','TS013d8ed5',reserved=reserved)
+        uniqulized 
+        
+        ####
+        #uniqualize_ckbody,via ckname, allow duplecate, return ckstr,by default uniqulize_all
+        #
+    '''
+    def via_ckname(ele,cknames):
+        cond = (ele[0] in cknames)
+        if(cond):
+            ckname = ele[0]
+        else:
+            ckname = None
+        return(ckname)
+    if('validate' in kwargs):
+        valid = validate_ckbody(ckbody)
+    else:
+        valid = True
+    if(valid):
+        pass
+    else:
+        print('invalid ckbody')
+        return(None)
+    if('reserved' in kwargs):
+        reserved = kwargs['reserved']
+    else:
+        reserved = None
+    cknames = list(cknames)
+    ckptl = ckbody2ptl(ckbody)
+    if(cknames.__len__()==0):
+        cknames = elel.array_map(ckptl,lambda ele:ele[0])
+    else:
+        pass
+    uniqulized = elel.cond_uniqualize(ckptl,cond_func=via_ckname,cond_func_args=[cknames],reserved_mapping=reserved)
+    ckstr = ptl2ckstr(uniqulized)
+    return(ckstr)
 
-
+uniqulize_ckbody = uniqualize_ckbody
 #Part.3
 #命名规则 priority ckheader > ckbody >ckstr > ckpl > ckptl > ckpdl >ckdict
-# 
 ####
 
 def split_ckheader(ckheader,**kwargs):
@@ -857,7 +1126,7 @@ def split_ckheader(ckheader,**kwargs):
         ckpdl = ckstr2pdl(ckstr)
         return({'cktype':cktype,'ckpdl':ckpdl})
     elif(mode == 'ckdict'):
-        ckdict = ckstr2dict(ckbody)
+        ckdict = ckstr2dict(ckstr)
         return({'cktype':cktype,'ckdict':ckdict})
     else:
         print("unknow mode")
@@ -917,9 +1186,249 @@ def cons_ckheader(ckbody,**kwargs):
     ckheader = TYPES['cktype']+SEPARATORS['ckheader']+ckstr
     return(ckheader)
 
+def select_ckheader(ckheader,*cknames,**kwargs):
+    '''
+        ckheader = 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+        selected = select_ckheader(ckheader,'BIGipServer','TSPD_101')
+        selected 
+        selected = select_ckheader(ckheader,'TSPD_101','BIGipServer')
+        selected
+    '''
+    if('validate' in kwargs):
+        valid = validate_ckbody(ckbody)
+    else:
+        valid = True
+    if(valid):
+        pass
+    else:
+        print('invalid ckbody')
+        return(None)
+    tmp = split_ckheader(ckheader)
+    ckbody = tmp['ckptl']
+    cktype = tmp['cktype']
+    ckbody = select_ckbody(ckbody,*cknames,**kwargs)
+    ckheader = cons_ckheader(ckbody,**kwargs)
+    return(ckheader)
+
+def is_ckheader(ckheader,**kwargs):
+    '''
+        roughly check
+        the detail check : rfc6265.is_cookie_header
+    '''
+    if('validate' in kwargs):
+        valid = validate_ckheader(ckheader)
+    else:
+        valid = True
+    if(valid):
+        pass
+    else:
+        print('invalid ckbody')
+        return(None)
+    if(type(ckheader) == type('')):
+        length = TYPES['cktype'].__len__()
+        cond = (ckheader[0:length] == TYPES['cktype'])
+        return(cond)
+    else:
+        return(False)
+
+def prepend_ckheader(ckheader,src,**kwargs):
+    '''
+        ckheader = 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0'
+        src = 'Cookie: __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+        prepended = prepend_ckheader(ckheader,src)
+        prepended
+        
+        ckheader = 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0'
+        src = '__RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+        prepended = prepend_ckheader(ckheader,src)
+        prepended 
+        
+        ckheader = 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0'
+        src = [('__RequestVerificationToken','9VdrIliI'),('ASP.NET_SessionId','epax')]
+        prepended = prepend_ckheader(ckheader,src)
+        prepended 
+        
+        ckheader = 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0'
+        src = {'__RequestVerificationToken':'9VdrIliI','ASP.NET_SessionId':'epax'}
+        prepended = prepend_ckheader(ckheader,src)
+        prepended 
+    
+    '''
+    #if src is not ckheader , treated as ckbody
+    cond = is_ckheader(src)
+    if(cond):
+        src_ckheader = src 
+        src_ckbody = split_ckheader(src_ckheader)['ckptl']
+    else:
+        src_ckbody = src 
+    dst_ckbody = split_ckheader(ckheader)['ckptl']
+    ckbody = prepend_ckbody(dst_ckbody,src_ckbody)
+    ckheader = cons_ckheader(ckbody)
+    return(ckheader)
+
+def append_ckheader(ckheader,src,**kwargs):
+    '''
+        ckheader = 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0'
+        src = 'Cookie: __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+        appended = append_ckheader(ckheader,src)
+        appended
+        
+        ckheader = 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0'
+        src = '__RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+        appended = append_ckheader(ckheader,src)
+        appended 
+        
+        ckheader = 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0'
+        src = [('__RequestVerificationToken','9VdrIliI'),('ASP.NET_SessionId','epax')]
+        appended = append_ckheader(ckheader,src)
+        appended 
+        
+        ckheader = 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0'
+        src = {'__RequestVerificationToken':'9VdrIliI','ASP.NET_SessionId':'epax'}
+        appended = append_ckheader(ckheader,src)
+        appended
+    '''
+    #if src is not ckheader , treated as ckbody
+    cond = is_ckheader(src)
+    if(cond):
+        src_ckheader = src 
+        src_ckbody = split_ckheader(src_ckheader)['ckptl']
+    else:
+        src_ckbody = src 
+    dst_ckbody = split_ckheader(ckheader)['ckptl']
+    ckbody = append_ckbody(dst_ckbody,src_ckbody)
+    ckheader = cons_ckheader(ckbody)
+    return(ckheader)
+
+def insert_ckheader(ckheader,src,location,**kwargs):
+    '''
+        ckheader = 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0'
+        src = 'Cookie: __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+        inserted = insert_ckheader(ckheader,src,0)
+        inserted
+        
+        ckheader = 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0'
+        src = '__RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+        inserted = insert_ckheader(ckheader,src,1)
+        inserted 
+        
+        ckheader = 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0'
+        src = [('__RequestVerificationToken','9VdrIliI'),('ASP.NET_SessionId','epax')]
+        inserted = insert_ckheader(ckheader,src,2)
+        inserted 
+        
+        ckheader = 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0'
+        src = {'__RequestVerificationToken':'9VdrIliI','ASP.NET_SessionId':'epax'}
+        inserted = insert_ckheader(ckheader,src,3)
+        inserted
+    '''
+    #if src is not ckheader , treated as ckbody
+    cond = is_ckheader(src)
+    if(cond):
+        src_ckheader = src 
+        src_ckbody = split_ckheader(src_ckheader)['ckptl']
+    else:
+        src_ckbody = src 
+    dst_ckbody = split_ckheader(ckheader)['ckptl']
+    ckbody = insert_ckbody(dst_ckbody,src_ckbody,location)
+    ckheader = cons_ckheader(ckbody)
+    return(ckheader)
+
+def remove_ckheader(ckheader,ckname,**kwargs):
+    '''
+        ckheader = 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; TS013d8ed5=0105b6b0; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+        removed = remove_ckheader(ckheader,'TS013d8ed5')
+        removed 
+
+        ckheader = 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; TS013d8ed5=0105b6b0; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+        removed = remove_ckheader(ckheader,'TS013d8ed5',which=1)
+        removed 
+
+        #remove_ckheader,via ckname, allow duplecate, return ckheader,by default remove_all
+    '''
+    if('which' in kwargs):
+        which = kwargs['which']
+    else:
+        which = None
+    dst_ckbody = split_ckheader(ckheader)['ckptl']
+    ckbody = remove_ckbody(dst_ckbody,ckname,which=which)
+    ckheader = cons_ckheader(ckbody)
+    return(ckheader)
+
+def replace_ckheader(ckheader,ckname,ckele,*args,**kwargs):
+    '''
+        ckheader = 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; TS013d8ed5=0105b6b0; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+        replaced = replace_ckheader(ckheader,'TS013d8ed5','TSreplace=replace')
+        replaced 
+        replaced = replace_ckheader(ckheader,'TS013d8ed5',('TSreplace','replace'))
+        replaced 
+        replaced = replace_ckheader(ckheader,'TS013d8ed5',{'TSreplace':'replace'})
+        replaced 
+        replaced = replace_ckheader(ckheader,'TS013d8ed5','TSreplace','replace')
+        replaced 
+        ####
+        ckheader = 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; TS013d8ed5=0105b6b0; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+        replaced = replace_ckheader(ckheader,'TS013d8ed5','TSreplace=replace',which=0)
+        replaced 
+        replaced = replace_ckheader(ckheader,'TS013d8ed5',('TSreplace','replace'),which=1)
+        replaced 
+        replaced = replace_ckheader(ckheader,'TS013d8ed5',{'TSreplace':'replace'},which=0)
+        replaced 
+        replaced = replace_ckheader(ckheader,'TS013d8ed5','TSreplace','replace',which=1)
+        replaced 
+        #replace_ckheader,via ckname, allow duplecate, return ckheader,by default replace_all
+    '''
+    if('which' in kwargs):
+        which = kwargs['which']
+    else:
+        which = None
+    dst_ckbody = split_ckheader(ckheader)['ckptl']
+    ckbody = replace_ckbody(dst_ckbody,ckname,ckele,*args,**kwargs)
+    ckheader = cons_ckheader(ckbody)
+    return(ckheader)
+
+def uniqualize_ckheader(ckheader,*cknames,**kwargs):
+    '''
+        ckheader = 'Cookie: BIGipServer=rd0; TS013d8ed5=T0; BIGipServer=rd1; TS013d8ed5=T1; SID=0; SID=1'
+        uniqulized = uniqualize_ckheader(ckheader)
+        uniqulized
+        
+        ckheader = 'Cookie: BIGipServer=rd0; TS013d8ed5=T0; BIGipServer=rd1; TS013d8ed5=T1; SID=0; SID=1'
+        reserved = {'BIGipServer':1,'TS013d8ed5':0,'SID':1}
+        uniqulized = uniqualize_ckheader(ckheader,reserved = reserved)
+        uniqulized 
+        
+        ckheader = 'Cookie: BIGipServer=rd0; TS013d8ed5=T0; BIGipServer=rd1; TS013d8ed5=T1; SID=0; SID=1'
+        uniqulized = uniqualize_ckheader(ckheader,'BIGipServer','TS013d8ed5')
+        uniqulized 
+        
+        ckheader = 'Cookie: BIGipServer=rd0; TS013d8ed5=T0; BIGipServer=rd1; TS013d8ed5=T1; SID=0; SID=1'
+        reserved = {'BIGipServer':1,'TS013d8ed5':0}
+        uniqulized = uniqualize_ckheader(ckheader,'BIGipServer','TS013d8ed5',reserved=reserved)
+        uniqulized 
+        
+        ####
+        #uniqualize_ckheader,via ckname, allow duplecate, return ckheader,by default uniqulize_all
+        #
+    '''
+    if('reserved' in kwargs):
+        reserved = kwargs['reserved']
+    else:
+        reserved = None
+    dst_ckbody = split_ckheader(ckheader)['ckptl']
+    ckbody = uniqualize_ckbody(dst_ckbody,*cknames,**kwargs)
+    ckheader = cons_ckheader(ckbody)
+    return(ckheader)
 
 
-
+#wrapped API: apply to either ckbody or ckheader
+#select
+#prepend
+#append
+#insert
+#remove
+#replace
+#uniqualize
 
 
 
