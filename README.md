@@ -44,6 +44,9 @@
 ├──14. [validate_ckpair](kukibanshee/Images/validate_ckpair.0.png)  <br>
 ├──15. [validate_cknv](kukibanshee/Images/validate_cknv.0.png)  <br>
 ├──16. [validate_ckele](kukibanshee/Images/validate_ckele.0.png)  <br>
+├──17. [detect_ckele](kukibanshee/Images/detect_ckele.0.png)  <br>
+├──18. [ckele2pt](kukibanshee/Images/ckele2pt.0.png)  <br>
+├──19. [convert_ckele](kukibanshee/Images/convert_ckele.0.png)  <br>
 
 
 
