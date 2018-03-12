@@ -102,19 +102,42 @@
 ├──44. [prepend_ckbody](kukibanshee/Images/prepend_ckbody.0.png)  <br>
 ├──45. [insert_ckbody](kukibanshee/Images/insert_ckbody.0.png)  <br>
 ├──46. [remove_ckbody](kukibanshee/Images/remove_ckbody.0.png)  <br>
-
-
+├──47. [replace_ckbody](kukibanshee/Images/replace_ckbody.0.png)  <br>
+├──48. [uniqualize_ckbody](kukibanshee/Images/uniqualize_ckbody.0.png)  <br>
 
 -----------------------------------------------------------------------
 
 ## cookie-header
 
 -----------------------------------------------------------------------
->├──0. [split_ckheader](kukibanshee/Images/split_ckheader.0.png)  <br>
+>├──0. [split_ckheader\<0\>](kukibanshee/Images/split_ckheader.0.png)  <br>
+├──0. [split_ckheader\<1\>](kukibanshee/Images/split_ckheader.1.png)  <br>
+├──0. [split_ckheader\<2\>](kukibanshee/Images/split_ckheader.2.png)  <br>
+├──0. [split_ckheader\<3\>](kukibanshee/Images/split_ckheader.3.png)  <br>
+├──0. [split_ckheader\<4\>](kukibanshee/Images/split_ckheader.4.png)  <br>
 ├──1. [cons_ckheader](kukibanshee/Images/cons_ckheader.0.png)  <br>
 ├──2. [validate_ckheader](kukibanshee/Images/validate_ckheader.0.png)  <br>
+├──3. [is_ckheader](kukibanshee/Images/is_ckheader.0.png)  <br>
+├──4. [select_ckheader](kukibanshee/Images/select_ckheader.0.png)  <br>
+├──5. [prepend_ckheader](kukibanshee/Images/prepend_ckheader.0.png)  <br>
+├──6. [append_ckheader](kukibanshee/Images/append_ckheader.0.png)  <br>
+├──7. [insert_ckheader](kukibanshee/Images/insert_ckheader.0.png)  <br>
+├──8. [remove_ckheader](kukibanshee/Images/remove_ckheader.0.png)  <br>
+├──9. [replace_ckheader](kukibanshee/Images/replace_ckheader.0.png)  <br>
+├──10. [uniqualize_ckheader](kukibanshee/Images/uniqualize_ckheader.0.png)  <br>
 
+------------------------------------------------------------------------------
 
+## wrapped API: apply to either ckbody or ckheader
+-----------------------------------------------------------
+>├──0. [select](kukibanshee/Images/ckheader.0.png)  <br>
+├──1. [prepend](kukibanshee/Images/ckheader.0.png)  <br>
+├──2. [append](kukibanshee/Images/ckheader.0.png)  <br>
+├──3. [insert](kukibanshee/Images/ckheader.0.png)  <br>
+├──4. [remove](kukibanshee/Images/ckheader.0.png)  <br>
+├──5. [replace](kukibanshee/Images/ckheader.0.png)  <br>
+├──6. [uniqualize](kukibanshee/Images/ckheader.0.png)  <br>
 
+------------------------------------------------------------
 
-
+-------------------------------------------------------------
