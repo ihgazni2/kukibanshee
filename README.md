@@ -103,7 +103,7 @@
 ├──45. [insert_ckbody](kukibanshee/Images/insert_ckbody.0.png)  <br>
 ├──46. [remove_ckbody](kukibanshee/Images/remove_ckbody.0.png)  <br>
 ├──47. [replace_ckbody](kukibanshee/Images/replace_ckbody.0.png)  <br>
-├──48. [uniqulize_ckbody](kukibanshee/Images/uniqulize_ckbody.0.png)  <br>
+├──48. [uniqualize_ckbody](kukibanshee/Images/uniqualize_ckbody.0.png)  <br>
 
 -----------------------------------------------------------------------
 
