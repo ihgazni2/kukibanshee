@@ -120,8 +120,24 @@
 ├──3. [is_ckheader](kukibanshee/Images/is_ckheader.0.png)  <br>
 ├──4. [select_ckheader](kukibanshee/Images/select_ckheader.0.png)  <br>
 ├──5. [prepend_ckheader](kukibanshee/Images/prepend_ckheader.0.png)  <br>
+├──6. [append_ckheader](kukibanshee/Images/append_ckheader.0.png)  <br>
+├──7. [insert_ckheader](kukibanshee/Images/insert_ckheader.0.png)  <br>
+├──8. [remove_ckheader](kukibanshee/Images/remove_ckheader.0.png)  <br>
+├──9. [replace_ckheader](kukibanshee/Images/replace_ckheader.0.png)  <br>
+├──10. [uniqualize_ckheader](kukibanshee/Images/uniqualize_ckheader.0.png)  <br>
 
+------------------------------------------------------------------------------
 
+## wrapped API: apply to either ckbody or ckheader
+-----------------------------------------------------------
+>├──0. [select](kukibanshee/Images/ckheader.0.png)  <br>
+├──1. [prepend](kukibanshee/Images/ckheader.0.png)  <br>
+├──2. [append](kukibanshee/Images/ckheader.0.png)  <br>
+├──3. [insert](kukibanshee/Images/ckheader.0.png)  <br>
+├──4. [remove](kukibanshee/Images/ckheader.0.png)  <br>
+├──5. [replace](kukibanshee/Images/ckheader.0.png)  <br>
+├──6. [uniqualize](kukibanshee/Images/ckheader.0.png)  <br>
 
+------------------------------------------------------------
 
-
+-------------------------------------------------------------
