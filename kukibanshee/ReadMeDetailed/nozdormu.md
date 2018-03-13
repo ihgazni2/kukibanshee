@@ -1,10 +1,10 @@
-__0. detect_time_format(date_value,**kwargs)__ <br>
+__0. detect_time_fmt(date_value,**kwargs)__ <br>
 
 __1. fromat_asc(asc)__ <br>
 
 __2. standlize(s)__ <br>
 
-__3. get_format_name(format)__ <br>
+__3. get_fmt_name(format)__ <br>
 
 __4. ts2dt(ts)__ <br>
 
