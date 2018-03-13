@@ -1,7 +1,7 @@
 import re
 import time
 import datetime
-import araq
+from kukibanshee import araq
 
 
 def detect_time_format(date_value,**kwargs):

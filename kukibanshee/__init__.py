@@ -1,3 +1,3 @@
 
-__all__ = ['drone','rfc6265','araq','jar']
+__all__ = ['drone','rfc6265','araq','jar','nozdormu']
 
