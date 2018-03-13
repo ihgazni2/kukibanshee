@@ -4,7 +4,7 @@ import datetime
 from kukibanshee import araq
 
 
-def detect_time_format(date_value,**kwargs):
+def detect_time_fmt(date_value,**kwargs):
     '''
         ####################HTTP-date###############
         # HTTP-date    = rfc1123-date | rfc850-date | asctime-date
@@ -34,6 +34,11 @@ def detect_time_format(date_value,**kwargs):
     rfc1123 = ''.join(("(",wkday,")",", ","[0-9]{2} ","(",month,")"," [0-9]{4} ","[0-9]{2}:[0-9]{2}:[0-9]{2} ","GMT"))
     rfc1123 = "^" + rfc1123 + "$"
     regex_rfc1123 = re.compile(rfc1123)
+    ####
+    rfc1123_tzoffset = ''.join(("(",wkday,")",", ","[0-9]{2} ","(",month,")"," [0-9]{4} ","[0-9]{2}:[0-9]{2}:[0-9]{2} ","[\+\-][0-9]{4}"))
+    rfc1123_tzoffset = "^" + rfc1123_tzoffset + "$"
+    regex_rfc1123_tzoffset = re.compile(rfc1123_tzoffset)
+    ####
     rfc1123_hypen = ''.join(("(",wkday,")",", ","[0-9]{2}-","(",month,")","-[0-9]{4} ","[0-9]{2}:[0-9]{2}:[0-9]{2} ","GMT"))
     regex_rfc1123_hypen = "^" + rfc1123_hypen + "$"
     regex_rfc1123_hypen = re.compile(rfc1123_hypen)
@@ -49,6 +54,8 @@ def detect_time_format(date_value,**kwargs):
     if(mode == 'strict'):
         if(araq._real_dollar(date_value,regex_rfc1123)):
             return('rfc1123')
+        elif(araq._real_dollar(date_value,regex_rfc1123_tzoffset)):
+            return('rfc1123_tzoffset')
         elif(araq._real_dollar(date_value,regex_rfc1123_hypen)):
             return('rfc1123_hypen')
         elif(araq._real_dollar(date_value,regex_rfc850)):
@@ -62,6 +69,8 @@ def detect_time_format(date_value,**kwargs):
     else:
         if(regex_rfc1123.search(date_value)):
             return('rfc1123')
+        if(regex_rfc1123_tzoffset.search(date_value)):
+            return('rfc1123_tzoffset')
         elif(regex_rfc1123_hypen.search(date_value)):
             return('rfc1123_hypen')
         elif(regex_rfc850.search(date_value)):
@@ -78,11 +87,13 @@ def detect_time_format(date_value,**kwargs):
 
 TIMEFMT = {
     'rfc1123':'%a, %d %b %Y %H:%M:%S GMT',
+    'rfc1123_tzoffset':'%a, %d %b %Y %H:%M:%S %z',
     'rfc1123_hypen':'%a, %d-%b-%Y %H:%M:%S GMT',
     'rfc850':'%A, %d-%b-%y %H:%M:%S GMT',
     'rfc850_a':'%a, %d-%b-%y %H:%M:%S GMT',
     'asctime':'%a, %b %d %H:%M:%S %Y',
     '%a, %d %b %Y %H:%M:%S GMT':'rfc1123',
+    '%a, %d %b %Y %H:%M:%S %z':'rfc1123_tzoffset'
     '%a, %d-%b-%Y %H:%M:%S GMT':'rfc1123_hypen',
     '%A, %d-%b-%y %H:%M:%S GMT':'rfc850',
     '%a, %d-%b-%y %H:%M:%S GMT':'rfc850_a',
@@ -90,7 +101,7 @@ TIMEFMT = {
 }
 
 
-def fromat_asc(asc):
+def format_asc(asc):
     asc = asc.replace("  "," 0")
     return(asc)
 
@@ -103,8 +114,8 @@ def standlize(s):
     
 
 
-def get_format_name(format):
-    return(TIMEFMT['format'])
+def get_fmt_name(fmt):
+    return(TIMEFMT[fmt])
 
 
 def ts2dt(ts):
@@ -118,46 +129,46 @@ def dt2ts(dt,**kwargs):
     return(dt.timestamp())
 
 def str2dt(s,**kwargs):
-    if('format' in kwargs):
-        format = kwargs['format']
+    if('fmt' in kwargs):
+        fmt = kwargs['fmt']
     else:
-        format_name = detect_time_format(s)
-        format = TIMEFMT[format_name]
-    if(format == 'asctime'):
-        s = format_asc(s)
+        fmt_name = detect_time_fmt(s)
+        fmt = TIMEFMT[fmt_name]
+    if(fmt == 'asctime'):
+        s = fmt_asc(s)
     else:
         s = standlize(s)
-    return(datetime.datetime.strptime(s,format))
+    return(datetime.datetime.strptime(s,fmt))
 
 def dt2str(dt,**kwargs):
-    if('format' in kwargs):
-        format = kwargs['format']
-    elif('format_name' in kwargs):
-        format_name = kwargs['format_name']
-        format = TIMEFMT[format_name]
+    if('fmt' in kwargs):
+        fmt = kwargs['fmt']
+    elif('fmt_name' in kwargs):
+        fmt_name = kwargs['fmt_name']
+        fmt = TIMEFMT[fmt_name]
     else:
-        format = TIMEFMT['rfc1123']
-    return(dt.strftime(format))
+        fmt = TIMEFMT['rfc1123']
+    return(dt.strftime(fmt))
 
 def str2ts(s,**kwargs):
-    if('format' in kwargs):
-        format = kwargs['format']
+    if('fmt' in kwargs):
+        fmt = kwargs['fmt']
     else:
-        format_name = detect_time_format(s)
-        format = TIMEFMT[format_name]
-    dt = str2dt(s,format=format)
+        fmt_name = detect_time_fmt(s)
+        fmt = TIMEFMT[fmt_name]
+    dt = str2dt(s,fmt=fmt)
     ts = dt2ts(dt)
     return(ts)
 
 
 def ts2str(ts,**kwargs):
     dt = ts2dt(ts)
-    if('format' in kwargs):
-        format = kwargs['format']
-    elif('format_name' in kwargs):
-        format_name = kwargs['format_name']
-        format = TIMEFMT[format_name]
+    if('fmt' in kwargs):
+        fmt = kwargs['fmt']
+    elif('fmt_name' in kwargs):
+        fmt_name = kwargs['fmt_name']
+        fmt = TIMEFMT[fmt_name]
     else:
-        format = TIMEFMT['rfc1123']
-    return(dt.strftime(format))
+        fmt = TIMEFMT['rfc1123']
+    return(dt.strftime(fmt))
 
