@@ -151,6 +151,26 @@
 ├──2. [tl2setckheaders](kukibanshee/Images/tl2setckheaders.0.png)  <br>
 ├──3. [setckdict2str](kukibanshee/Images/setckdict2str.0.png)  <br>
 ├──4. [str2setckdict](kukibanshee/Images/str2setckdict.0.png)  <br>
+├──5. [str2setckdict](kukibanshee/Images/str2setckdict.0.png)  <br>
+├──6. [setckdict2str](kukibanshee/Images/setckdict2str.0.png)  <br>
+├──7. [sl2setckdl](kukibanshee/Images/sl2setckdl.0.png)  <br>
+├──8. [setckdl2sl](kukibanshee/Images/setckdl2sl.0.png)  <br>
+├──9. [setckheader2str](kukibanshee/Images/setckheader2str.0.png)  <br>
+├──10. [setckheaders2sl](kukibanshee/Images/setckheaders2sl.0.png)  <br>
+├──11. [str2setckheader](kukibanshee/Images/str2setckheader.0.png)  <br>
+├──12. [sl2setckheaders](kukibanshee/Images/sl2setckheaders.0.png)  <br>
+├──13. [setckheader2dict](kukibanshee/Images/setckheader2dict.0.png)  <br>
+├──14. [setckheaders2dl](kukibanshee/Images/setckheaders2dl.0.png)  <br>
+├──15. [dict2setckheader](kukibanshee/Images/dict2setckheader.0.png)  <br>
+├──16. [dl2setckheaders](kukibanshee/Images/dl2setckheaders.0.png)  <br>
+├──17. [setcktuple2str](kukibanshee/Images/setcktuple2str.0.png)  <br>
+├──18. [setcktl2sl](kukibanshee/Images/setcktl2sl.0.png)  <br>
+├──19. [str2setcktuple](kukibanshee/Images/str2setcktuple.0.png)  <br>
+├──20. [sl2setcktl](kukibanshee/Images/sl2setcktl.0.png)  <br>
+├──21. [setcktuple2dict](kukibanshee/Images/setcktuple2dict.0.png)  <br>
+├──22. [setcktl2dl](kukibanshee/Images/setcktl2dl.0.png)  <br>
+├──23. [dict2setcktuple](kukibanshee/Images/dict2setcktuple.0.png)  <br>
+├──24. [dl2setcktl](kukibanshee/Images/dl2setcktl.0.png)  <br>
 
 
 --------------------------------------------------------------------------
