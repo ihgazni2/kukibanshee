@@ -956,6 +956,198 @@ uniqulized
 
 
 
+#select
+
+ckstr = 'BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+selected = select(ckstr,'BIGipServer','TSPD_101')
+selected 
+
+ckheader = 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+selected = select(ckheader,'BIGipServer','TSPD_101')
+selected 
+
+# >>>
+# >>>
+# >>> ckstr = 'BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; __RequestVerific                                   ationToken=9VdrIliI; ASP.NET_SessionId=epax'
+# >>> selected = select(ckstr,'BIGipServer','TSPD_101')
+# >>> selected
+# 'BIGipServer=rd19; TSPD_101=08819c2a'
+# >>>
+# >>> ckheader = 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; __Req                                   uestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+# >>> selected = select(ckheader,'BIGipServer','TSPD_101')
+# >>> selected
+# 'Cookie: BIGipServer=rd19; TSPD_101=08819c2a'
+# >>>
+# >>>
+
+
+dst_ckbody = {'__RequestVerificationToken':'9VdrIliI','ASP.NET_SessionId':'epax'}
+src_ckbody = 'BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a'
+ckstr = prepend(dst_ckbody,src_ckbody)
+ckstr 
+
+ckheader = 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0'
+src = 'Cookie: __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+prepended = prepend(ckheader,src)
+prepended
+
+
+# >>>
+# >>> dst_ckbody = {'__RequestVerificationToken':'9VdrIliI','ASP.NET_SessionId':'epax'}
+# >>> src_ckbody = 'BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a'
+# >>> ckstr = prepend(dst_ckbody,src_ckbody)
+# prepended = prepend(ckheader,src)
+# >>> ckstr
+# 'BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; __RequestVerificationToken=9
+# >>>
+# >>> ckheader = 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0'
+# >>> src = 'Cookie: __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+# >>> prepended = prepend(ckheader,src)
+# >>> prepended
+# 'Cookie: __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax; BIGipServer=rd19;
+# >>>
+# >>>
+# >>>
+
+
+
+dst_ckbody = {'__RequestVerificationToken':'9VdrIliI','ASP.NET_SessionId':'epax'}
+src_ckbody = 'BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a'
+ckstr = append(dst_ckbody,src_ckbody)
+ckstr
+
+ckheader = 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0'
+src = 'Cookie: __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+appended = append(ckheader,src)
+appended
+
+
+# >>>
+# >>> dst_ckbody = {'__RequestVerificationToken':'9VdrIliI','ASP.NET_SessionId':'epax'}
+# >>> src_ckbody = 'BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a'
+# >>> ckstr = append(dst_ckbody,src_ckbody)
+# >>> ckstr
+# '__RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax; BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a'
+# >>>
+# ckheader = 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0'
+# >>> ckheader = 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0'
+# >>> src = 'Cookie: __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+# >>> appended = append(ckheader,src)
+# >>> appended
+# 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+# >>>
+
+
+dst_ckbody = '__RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+src_ckbody = 'BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a'
+ckstr = insert(dst_ckbody,src_ckbody,1)
+ckstr
+
+ckheader = 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0'
+src = 'Cookie: __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+inserted = insert(ckheader,src,0)
+inserted
+
+
+# >>>
+# >>> dst_ckbody = '__RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+# >>> src_ckbody = 'BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a'
+# >>> ckstr = insert(dst_ckbody,src_ckbody,1)
+# >>> ckstr
+# '__RequestVerificationToken=9VdrIliI; BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=0
+# >>>
+# >>> ckheader = 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0'
+# >>> src = 'Cookie: __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+# >>> inserted = insert(ckheader,src,0)
+# >>> inserted
+# 'Cookie: __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax; BIGipServer=rd19;
+# >>>
+# >>>
+
+
+
+ckstr = 'BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; TS013d8ed5=0105b6b0; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+lefted = remove(ckstr,'TS013d8ed5')
+lefted 
+#####
+ckheader = 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; TS013d8ed5=0105b6b0; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+removed = remove(ckheader,'TS013d8ed5')
+removed 
+
+
+# >>>
+# >>> ckstr = 'BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; TS013d8ed5=0105brIliI; ASP.NET_SessionId=epax'
+# >>> lefted = remove(ckstr,'TS013d8ed5')
+# >>> lefted
+# 'BIGipServer=rd19; TSPD_101=08819c2a; __RequestVerificationToken=9VdrIliI; ASP.NET_Sess
+# >>> #####
+# ... ckheader = 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; TS013onToken=9VdrIliI; ASP.NET_SessionId=epax'
+# >>> removed = remove(ckheader,'TS013d8ed5')
+# >>> removed
+# 'Cookie: BIGipServer=rd19; TSPD_101=08819c2a; __RequestVerificationToken=9VdrIliI; ASP.
+# >>>
+# >>>
+
+
+ckstr = 'BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; TS013d8ed5=0105b6b0; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+replaced = replace(ckstr,'TS013d8ed5','TSreplace=replace')
+replaced 
+####
+ckheader = 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; TS013d8ed5=0105b6b0; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+replaced = replace(ckheader,'TS013d8ed5','TSreplace=replace')
+replaced 
+
+# >>>
+# >>> ckstr = 'BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; TS013d8ed5=0105b6b0; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+# ckheader = 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; TS013d8ed5=0105b6b0; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+# >>> replaced = replace(ckstr,'TS013d8ed5','TSreplace=replace')
+# replaced = replace(ckheader,'TS013d8ed5','TSreplace=replace')
+# >>> replaced
+# 'BIGipServer=rd19; TSreplace=replace; TSPD_101=08819c2a; TSreplace=replace; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+# >>> ####
+# ... ckheader = 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; TS013d8ed5=0105b6b0; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+# >>> replaced = replace(ckheader,'TS013d8ed5','TSreplace=replace')
+# >>> replaced
+# 'Cookie: BIGipServer=rd19; TSreplace=replace; TSPD_101=08819c2a; TSreplace=replace; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+# >>>
+
+
+ckstr = 'BIGipServer=rd0; TS013d8ed5=T0; BIGipServer=rd1; TS013d8ed5=T1; SID=0; SID=1'
+uniqulized = uniqualize(ckstr)
+uniqulized
+####
+ckheader = 'Cookie: BIGipServer=rd0; TS013d8ed5=T0; BIGipServer=rd1; TS013d8ed5=T1; SID=0; SID=1'
+uniqulized = uniqualize(ckheader)
+uniqulized
+
+
+# >>>
+# >>>
+# >>> ckstr = 'BIGipServer=rd0; TS013d8ed5=T0; BIGipServer=rd1; TS013d8ed5=T1; SID=0; SID                                   =1'
+# >>> uniqulized = uniqualize(ckstr)
+# >>> uniqulized
+# 'BIGipServer=rd0; TS013d8ed5=T0; SID=0'
+# >>> ####
+# ... ckheader = 'Cookie: BIGipServer=rd0; TS013d8ed5=T0; BIGipServer=rd1; TS013d8ed5=T1;                                    SID=0; SID=1'
+# >>> uniqulized = uniqualize(ckheader)
+# >>> uniqulized
+# 'Cookie: BIGipServer=rd0; TS013d8ed5=T0; SID=0'
+# >>>
+# >>>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

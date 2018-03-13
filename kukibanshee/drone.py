@@ -1422,13 +1422,139 @@ def uniqualize_ckheader(ckheader,*cknames,**kwargs):
 
 
 #wrapped API: apply to either ckbody or ckheader
-#select
-#prepend
-#append
-#insert
-#remove
-#replace
-#uniqualize
+def select(horb,*cknames,**kwargs):
+    '''
+        ckstr = 'BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+        selected = select(ckstr,'BIGipServer','TSPD_101')
+        selected 
+        
+        ckheader = 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+        selected = select(ckheader,'BIGipServer','TSPD_101')
+        selected 
+    '''
+    cond = is_ckheader(horb)
+    if(cond):
+        return(select_ckheader(horb,*cknames,**kwargs))
+    else:
+        return(select_ckbody(horb,*cknames,**kwargs))
+
+def prepend(horb,src,**kwargs):
+    '''
+        dst_ckbody = {'__RequestVerificationToken':'9VdrIliI','ASP.NET_SessionId':'epax'}
+        src_ckbody = 'BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a'
+        ckstr = prepend(dst_ckbody,src_ckbody)
+        ckstr
+        
+        ckheader = 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0'
+        src = 'Cookie: __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+        prepended = prepend(ckheader,src)
+        prepended
+    '''
+    ckstrcond = is_ckheader(horb)
+    if(cond):
+        return(prepend_ckheader(horb,src,**kwargs))
+    else:
+        return(prepend_ckbody(horb,src,**kwargs))
+
+def append(horb,src,**kwargs):
+    '''
+        dst_ckbody = {'__RequestVerificationToken':'9VdrIliI','ASP.NET_SessionId':'epax'}
+        src_ckbody = 'BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a'
+        ckstr = append(dst_ckbody,src_ckbody)
+        ckstr
+        
+        ckheader = 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0'
+        src = 'Cookie: __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+        appended = append(ckheader,src)
+        appended
+    '''
+    cond = is_ckheader(horb)
+    if(cond):
+        return(append_ckheader(horb,src,**kwargs))
+    else:
+        return(append_ckbody(horb,src,**kwargs))
+
+def insert(horb,src,location,**kwargs):
+    '''
+        dst_ckbody = '__RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+        src_ckbody = 'BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a'
+        ckstr = insert(dst_ckbody,src_ckbody,1)
+        ckstr
+        
+        ckheader = 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0'
+        src = 'Cookie: __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+        inserted = insert(ckheader,src,0)
+        inserted
+    '''
+    cond = is_ckheader(horb)
+    if(cond):
+        return(insert_ckheader(horb,src,location,**kwargs))
+    else:
+        return(insert_ckbody(horb,src,location,**kwargs))
+
+def remove(horb,ckname,**kwargs):
+    '''
+        ckstr = 'BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; TS013d8ed5=0105b6b0; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+        lefted = remove(ckstr,'TS013d8ed5')
+        lefted 
+        #####
+        ckheader = 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; TS013d8ed5=0105b6b0; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+        removed = remove(ckheader,'TS013d8ed5')
+        removed 
+    '''
+    cond = is_ckheader(horb)
+    if(cond):
+        return(remove_ckheader(horb,ckname,**kwargs))
+    else:
+        return(remove_ckbody(horb,ckname,**kwargs))
+
+def replace(horb,ckname,ckele,*args,**kwargs):
+    '''
+        ckstr = 'BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; TS013d8ed5=0105b6b0; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+        replaced = replace(ckstr,'TS013d8ed5','TSreplace=replace')
+        replaced 
+        ####
+        ckheader = 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; TS013d8ed5=0105b6b0; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+        replaced = replace(ckheader,'TS013d8ed5','TSreplace=replace')
+        replaced 
+    '''
+    cond = is_ckheader(horb)
+    if(cond):
+        return(replace_ckheader(horb,ckname,ckele,*args,**kwargs))
+    else:
+        return(replace_ckbody(horb,ckname,ckele,*args,**kwargs))
 
 
+def uniqualize(horb,*cknames,**kwargs):
+    '''
+        ckstr = 'BIGipServer=rd0; TS013d8ed5=T0; BIGipServer=rd1; TS013d8ed5=T1; SID=0; SID=1'
+        uniqulized = uniqualize(ckstr)
+        uniqulized
+        ####
+        ckheader = 'Cookie: BIGipServer=rd0; TS013d8ed5=T0; BIGipServer=rd1; TS013d8ed5=T1; SID=0; SID=1'
+        uniqulized = uniqualize_ckheader(ckheader)
+        uniqulized
+    '''
+    cond = is_ckheader(horb)
+    if(cond):
+        return(uniqualize_ckheader(horb,*cknames,**kwargs))
+    else:
+        return(uniqualize_ckbody(horb,*cknames,**kwargs))
+
+
+#Part.4 Set-Cookie
+# set-cookie-header = "Set-Cookie:" SP set-cookie-string 
+# set-cookie-string = cookie-pair *( ";" SP cookie-av ) 
+# cookie-av ##attribute-name case-insensitively 
+# expires-av 
+# expires-value sane-cookie-date 
+# max-age-av 
+# max-age-value 
+# domain-av 
+# domain-value 
+# path-av 
+# path-value
+# secure-av 
+# httponly-av 
+# extension-av 
 
