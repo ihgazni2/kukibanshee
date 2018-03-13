@@ -16,6 +16,13 @@ def _real_dollar(s,m):
         >>> regex.search('a\na')
 
     '''
+    #for compatible with old code
+    regex = re.compile('')
+    if(type(m) == type(regex)):
+        m = m.search(s)
+    else:
+        pass
+    ###############################
     if(m):
         length_1 = s.__len__()
         length_2 = m.group(0).__len__()
@@ -25,6 +32,12 @@ def _real_dollar(s,m):
             return(False)
     else:
         return(False)
+
+
+
+
+
+
 
 def _creat_regex(unescaped_regex_str,**kwargs):
     '''something like re.escape, with the unescape part prefix and suffix'''
