@@ -1837,43 +1837,52 @@ def dl2setcktl(setckdl):
     setcktl = elel.array_map(setckdl,dict2setcktuple)
     return(setcktl)
 
-
-
-
-#@@@@@@@@@@@@@@@@@@@@@@@@@@@2
-# def split_setckheader(setckheader,**kwargs):
-    # '''
-        # setckheader = "Set-Cookie: __Host-user_session=Tz98; path=/; expires=Tue, 27 Mar 2018 05:30:16 -0000; secure; HttpOnly; SameSite=Strict"
-        # pobj(split_setckheader(setckheader))
-    # '''
-    # if('mode' in kwargs):
-        # mode = kwargs['mode']
-    # else:
-        # mode = 'ckptl'
-    # setcktype,setckstr = tuple(ckheader.split(SEPARATORS['setckheader']))
-    # if(mode == 'ckstr'):
-        # return({'cktype':cktype,'ckstr':ckstr})
-    # elif(mode == 'ckpl'):
-        # ckpl = ckstr2pl(ckstr)
-        # return({'cktype':cktype,'ckpl':ckpl})
-    # elif(mode == 'ckptl'):
-        # ckptl = ckstr2ptl(ckstr)
-        # return({'cktype':cktype,'ckptl':ckptl})
-    # elif(mode == 'ckpdl'):
-        # ckpdl = ckstr2pdl(ckstr)
-        # return({'cktype':cktype,'ckpdl':ckpdl})
-    # elif(mode == 'ckdict'):
-        # ckdict = ckstr2dict(ckstr)
-        # return({'cktype':cktype,'ckdict':ckdict})
-    # else:
-        # print("unknow mode")
-        # return(None)
-
-
-
-
-
+def split_setckheader(setckheader,**kwargs):
+    '''
+        setckheader = "Set-Cookie: __Host-user_session=Tz98; path=/; expires=Tue, 27 Mar 2018 05:30:16 -0000; secure; HttpOnly; SameSite=Strict"
+        pobj(split_setckheader(setckheader))
         
+        pobj(split_setckheader(setckheader,mode='setckstr'))
+    '''
+    if('mode' in kwargs):
+        mode = kwargs['mode']
+    else:
+        mode = 'setckdict'
+    setcktype,setckstr = tuple(setckheader.split(SEPARATORS['setckheader']))
+    if(mode == 'setckstr'):
+        return({'setcktype':setcktype,'setckstr':setckstr})
+    elif(mode == 'setckdict'):
+        setckdict = str2setckdict(setckstr)
+        return({'cktype':setcktype,'setckdict':setckdict})
+    else:
+        print("unknow mode")
+        return(None)
+
+def detect_setckbody(setckbody,**kwargs):
+    '''
+        setckbody = '__Host-user_session=Tz98; path=/; expires=Tue, 27 Mar 2018 05:30:16 -0000; secure; HttpOnly; SameSite=Strict'
+        detect_setckbody(setckbody)
+        
+        setckbody = {
+                       'value': 'Tz98',
+                       'Expires': 'Tue, 27 Mar 2018 05:30:16 -0000',
+                       'name': '__Host-user_session',
+                       'Secure': True,
+                       'Path': '/',
+                       'HttpOnly': True,
+                       'SameSite=Strict': True
+                      }
+        detect_setckbody(setckbody)
+    '''
+    if(type(setckbody) == type('')):
+        return('setckstr')
+    elif(type(setckbody) == type(dict({}))):
+        return('setckdict')
+    else:
+        print('unknown')
+        return(None)
+
+
 #ckavattr            ['expires','max-age','domain','path','secure','httponly']
 #expav             expires-av 
 #expval            expires-value sane-cookie-date 
@@ -1893,16 +1902,32 @@ def uniform_ckavattr(ckavattr,**kwargs):
     '''
         uniform_ckavattr('expires')
         uniform_ckavattr('max-Age')
+        pobj(CKAVNAMES)
+        
+        uniform_ckavattr('nAme',names=CKAVNAMES+['name','value','extension-av'])
+        
     '''
+    if('names' in kwargs):
+        names = kwargs['names']
+    else:
+        names = CKAVNAMES
+    lowernames = elel.array_map(names,str.lower)
     ckavattr = ckavattr.lower()
-    cond = (ckavattr in CKAVLOWERNAMES)
+    cond = (ckavattr in lowernames)
     if(cond):
-        index = CKAVLOWERNAMES.index(ckavattr)
-        return(CKAVNAMES[index])
+        index = lowernames.index(ckavattr)
+        return(names[index])
     else:
         return(None)
 
 def ckav2tuple(ckav,**kwargs):
+    '''
+        ckav = 'expires=Tue, 27 Mar 2018 05:30:16 -0000'
+        ckav2tuple(ckav)
+        
+        ckav = 'HttpOnly'
+        ckav2tuple(ckav)
+    '''
     regex = re.compile("(.*?)=(.*)")
     m = regex.search(ckav)
     if(m):
@@ -1913,5 +1938,45 @@ def ckav2tuple(ckav,**kwargs):
         v = True
     return((k,v))
 
-
-
+def get_ckavalue(setckbody,ckavattr,**kwargs):
+    '''
+        setckbody = '__Host-user_session=Tz98; path=/; expires=Tue, 27 Mar 2018 05:30:16 -0000; secure; HttpOnly; SameSite=Strict'
+        
+        get_ckavalue(setckbody,'Expires')
+        
+        get_ckavalue(setckbody,'name')
+        
+        get_ckavalue(setckbody,'value')
+        
+        get_ckavalue(setckbody,'PATH')
+        
+        get_ckavalue(setckbody,'httponly')
+        
+        get_ckavalue(setckbody,'extension-av')
+    '''
+    attr = uniform_ckavattr(ckavattr,names=CKAVNAMES+['name','value','extension-av'])
+    mode = detect_setckbody(setckbody)
+    if(mode=='setckstr'):
+        setckdict = str2setckdict(setckbody)
+    elif(mode == 'setckdict'):
+        setckdict = setckbody
+    else:
+        print('unknown')
+        return(None)
+    if(attr in setckdict):
+        value = setckdict[attr]
+        if(value == True):
+            return(attr)
+        else:
+            return(value)
+    elif(attr == 'extension-av'):
+        rslt = []
+        for attr in setckdict:
+            if(attr in CKAVNAMES+['name','value']):
+                pass
+            else:
+                rslt.append(attr)
+        return(rslt)
+    else:
+        print("not exist")
+        return(None)
