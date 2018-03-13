@@ -13,9 +13,9 @@ for detailed usage and functions please refer to:
 -------------------------------------------------
 
 ----------------------------------------------------------
->├── [araq](ReadMeDetailed/araq.md)
-├── [rfc6265](ReadMeDetailed/rfc6265.md)
-├── [jar](ReadMeDetailed/jar.md)
+>├── [araq](ReadMeDetailed/araq.md)  
+├── [rfc6265](ReadMeDetailed/rfc6265.md)  
+├── [jar](ReadMeDetailed/jar.md)  
 ----------------------------------------------------------
 
 
