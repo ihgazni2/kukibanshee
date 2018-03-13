@@ -144,4 +144,7 @@
 ---------------------
 >├──0. [setckheader2tuple](kukibanshee/Images/setckheader2tuple.0.png)  <br>
 ├──1. [tuple2setckheader](kukibanshee/Images/setckheader2tuple.0.png)  <br>
+├──2. [tl2setckheaders](kukibanshee/Images/tl2setckheaders.0.png)  <br>
+├──3. [setckheaders2tl](kukibanshee/Images/tl2setckheaders.0.png)  <br>
+
 
