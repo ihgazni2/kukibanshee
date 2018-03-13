@@ -160,3 +160,53 @@ CONST_REGEX = {
     'ctls':re.escape(CONST_STR['ctls'])
 }
 
+
+#
+def _isNUL(c):
+    '''null octet'''
+    return(c=='\x00')
+
+def _isOCTET(c):
+    '''any 8-bit sequence of data except NUL'''
+    regex_str = CONST_STR['octs']
+    prefix = "^[" 
+    suffix = "]$"
+    regex = _creat_regex(regex_str,prefix=prefix,suffix=suffix)
+    m=regex.search(c)
+    return(bool(_real_dollar(c,m)))
+
+def _isWSP(c):
+    '''whitespace'''
+    return(c=='\x20')
+
+def _is_obs_fold(cc):
+    '''CRLF'''
+    return(cc=='\r\n')
+
+def _isOWS(s):
+    '''
+        *( [ obs-fold ] WSP )
+        # The OWS (optional whitespace) rule is used where zero or more linear   whitespace characters MAY appear
+    '''
+    regex = re.compile("^((\r\n)? )*$")
+    m=regex.search(s)
+    return(bool(_real_dollar(s,m)))
+
+def _is_separators(c):
+    '''
+        HT = "\t"
+        separators= 
+            "(" | ")" | "<" | ">" | "@"| "," |
+            ";" | ":" | "\" | <">| "/" | "[" |
+            "]" | "?" | "=" | "{" | "}" | SP |
+            HT 
+    '''
+    regex = re.compile("^[\(\)<>@,;:\\\\\"/\[\]\?=\{\} \t]$")
+    m=regex.search(c)
+    return(bool(_real_dollar(c,m)))
+
+
+
+
+
+
