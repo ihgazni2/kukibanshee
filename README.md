@@ -140,4 +140,8 @@
 
 ------------------------------------------------------------
 
--------------------------------------------------------------
+## set-cookie-header  
+---------------------
+>├──0. [setckheader2tuple](kukibanshee/Images/setckheader2tuple.0.png)  <br>
+├──1. [tuple2setckheader](kukibanshee/Images/setckheader2tuple.0.png)  <br>
+
