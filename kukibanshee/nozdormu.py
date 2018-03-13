@@ -47,15 +47,15 @@ def detect_time_format(date_value,**kwargs):
     regex_asctime = "^" + asctime + "$"
     regex_asctime = re.compile(asctime)
     if(mode == 'strict'):
-        if(araq._real_dollar(regex_rfc1123,date_value)):
+        if(araq._real_dollar(data_value,regex_rfc1123)):
             return('rfc1123')
-        elif(araq._real_dollar(regex_rfc1123_hypen,date_value)):
+        elif(araq._real_dollar(data_value,regex_rfc1123_hypen)):
             return('rfc1123_hypen')
-        elif(araq._real_dollar(regex_rfc850,date_value)):
+        elif(araq._real_dollar(data_value,regex_rfc850)):
             return('rfc850')
-        elif(araq._real_dollar(regex_rfc850_a,date_value)):
+        elif(araq._real_dollar(data_value,regex_rfc850_a)):
             return('rfc850_a')
-        elif(araq._real_dollar(regex_asctime,date_value)):
+        elif(araq._real_dollar(data_value,regex_asctime)):
             return('asctime')
         else:
             return(None)
