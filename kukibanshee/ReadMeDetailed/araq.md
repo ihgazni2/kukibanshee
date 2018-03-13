@@ -29,3 +29,16 @@ __13. CONST\_REGEX__
 
 ![](../Images/araq.CONST_REGEX.0.png) 
 
+__14. \_isNUL(c)__
+
+__15. \_isOCTET(c)__
+
+__16. \_isWSP(c)__
+
+__17. \_is\_obs\_fold(cc)__
+
+__18. \_isOWS(s)__
+
+__19. \_is\_separators(c)__
+
+
