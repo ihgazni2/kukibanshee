@@ -12,13 +12,13 @@
 for detailed usage and functions please refer to:
 -------------------------------------------------
 
-------------------------------------------------------------------------
->├── [araq](ReadMeDetailed/araq.md)  _regexp tools; time tools_  <br> 
-├── [rfc6265](ReadMeDetailed/rfc6265.md)  _engine; basic functions_ <br>
-├── [jar](ReadMeDetailed/jar.md)   _store functions_ <br>
-├── [drone](ReadMeDetailed/drone.md)  _string level functions_ <br>
+------------------------------------------------------------------------------------
+>├── [araq](kukibanshee/ReadMeDetailed/araq.md)  _regexp tools; time tools_  <br> 
+├── [rfc6265](kukibanshee/ReadMeDetailed/rfc6265.md)  _engine; basic functions_ <br>
+├── [jar](kukibanshee/ReadMeDetailed/jar.md)   _store functions_ <br>
+├── [drone](kukibanshee/ReadMeDetailed/drone.md)  _string level functions_ <br>
 
-------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
 
 
 
