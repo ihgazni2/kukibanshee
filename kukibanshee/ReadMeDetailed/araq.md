@@ -23,9 +23,9 @@ __11. \_all\_ctls\_str()__
 
 __12. CONST\_STR__
 
-![] (kukibanshee/Images/araq.CONST_STR.0.png) 
+![](../Images/araq.CONST_STR.0.png) 
 
 __13. CONST\_REGEX__
 
-![] (kukibanshee/Images/araq.CONST_REGEX.0.png) 
+![](../Images/araq.CONST_REGEX.0.png) 
 
