@@ -1,5 +1,8 @@
 import elist.elist as elel
 from kukibanshee import rfc6265
+import re
+import copy
+
 
 def help():
     if(func_name == ''):
@@ -77,12 +80,20 @@ def help():
 SEPARATORS = {
     'ckheader':': ',
     'ckstr':'; ',
-    'ckpair':'='
+    'ckpair':'=',
+    'setckheader':': ',
+    'setckstr':'; ',
+    'ckav':'='
 }
 
 TYPES = {
-    'cktype': "Cookie"
+    'cktype': "Cookie",
+    'setcktype': "Set-Cookie"
 }
+
+CKAVNAMES = ['Expires','Max-Age','Domain','Path','Secure','HttpOnly']
+CKAVLOWERNAMES = ['expires','max-age','domain','path','secure','httponly']
+
 
 #ckheader              cookie-header              "Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax"
 #cktype                cookie-type                "Cookie"
@@ -1543,18 +1554,364 @@ def uniqualize(horb,*cknames,**kwargs):
 
 
 #Part.4 Set-Cookie
-# set-cookie-header = "Set-Cookie:" SP set-cookie-string 
-# set-cookie-string = cookie-pair *( ";" SP cookie-av ) 
-# cookie-av ##attribute-name case-insensitively 
-# expires-av 
-# expires-value sane-cookie-date 
-# max-age-av 
-# max-age-value 
-# domain-av 
-# domain-value 
-# path-av 
-# path-value
-# secure-av 
-# httponly-av 
-# extension-av 
+# 客户端 只要实现 split_setckheader 即可
+# 因为每个set-cookie-header 只能包含一条cookie-pair,所以只要支持python返回的一种数据格式setcktuple即可
+#setckheader       set-cookie-header     "Set-Cookie: __Host-user_session=Tz98; path=/; expires=Tue, 27 Mar 2018 05:30:16 -0000; secure; HttpOnly; SameSite=Strict"
+#setcktuple        set-cookie-tuple     ('Set-Cookie', 'TSPD_101_R0=e7b7; Max-Age=5; Path=/secure/abc.htm')
+
+
+#setcktype         set-cookie-type       "Set-Cookie"
+#一个response 中可能包含多条 set-cookie-header
+#setcktl           set-cookie-tupleList   [('Set-Cookie', 'BIGipServe=rd0; path=/'), ('Set-Cookie', 'TS=0105; Path=/; Secure; HTTPOnly')]
+
+#命名规则  setckheader > setcktuple 
+
+def setckheader2tuple(setckheader,**kwargs):
+    '''
+        setckheader = "Set-Cookie: __Host-user_session=Tz98; path=/; expires=Tue, 27 Mar 2018 05:30:16 -0000; secure; HttpOnly; SameSite=Strict"
+        setcktuple = setckheader2tuple(setckheader)
+        pobj(setcktuple)
+        #for python urllib compatible
+    '''
+    setcktuple = tuple(setckheader.split(SEPARATORS['setckheader']))
+    return(setcktuple)
+
+def tuple2setckheader(setcktuple,**kwargs):
+    '''
+        setcktuple = ('Set-Cookie', '__Host-user_session=Tz98; path=/; expires=Tue, 27 Mar 2018 05:30:16 -0000; secure; HttpOnly; SameSite=Strict')
+        setckheader = tuple2setckheader(setcktuple)
+        setckheader
+    '''
+    setcktype,setckstr = setcktuple
+    setckheader = setcktype + SEPARATORS['setckheader']+ setckstr
+    return(setckheader)
+
+def tl2setckheaders(setcktl,**kwargs):
+    '''
+        setcktl = [('Set-Cookie', 'BIGipServe=rd0; path=/'), ('Set-Cookie', 'TS=0105; Path=/; Secure; HTTPOnly')]
+        setckhs = tl2setckheaders(setcktl)
+        pobj(setckhs)
+    '''
+    setckhs = elel.array_map(setcktl,tuple2setckheader)
+    return(setckhs)
+
+def setckheaders2tl(setckheaders,**kwargs):
+    '''
+        setckhs = ['Set-Cookie: BIGipServe=rd0; path=/','Set-Cookie: TS=0105; Path=/; Secure; HTTPOnly']
+        setcktl = setckheaders2tl(setckheaders)
+        pobj(setcktl)
+    '''
+    setcktl = elel.array_map(setckheaders,setckheader2tuple)
+    return(setcktl)
+
+
+#一些invalid 的set-cookie-str 可能会包含多个cookie-pair ,多个同名的cookie-av, 这个放在validate format里面做
+#目前假定所有server发送的都是正确的格式
+#setckstr          set-cookie-string      "__Host-user_session=Tz98; path=/; expires=Tue, 27 Mar 2018 05:30:16 -0000; secure; HttpOnly; SameSite=Strict"              #cookie-pair *( ";" SP cookie-av ) 
+#setckdict         set-cookie-dict      {'SameSite=Strict': True, 'Path': '/', 'value': 'Tz98', 'HttpOnly': True, 'Secure': True, 'name': '__Host-user_session', 'Expires': 'Tue, 27 Mar 2018 05:30:16 -0000'}
+#setckbody         setckstr | setckdict   
+#setcksl           set-cookie_stringList  
+#setckdl           set-cookie-dictList    
+
+#命名规则  setckbody > setckdict > setckstr 
+
+def str2setckdict(setckstr,**kwargs):
+    '''
+        setckstr = "__Host-user_session=Tz98; path=/; expires=Tue, 27 Mar 2018 05:30:16 -0000; secure; HttpOnly; SameSite=Strict"
+        setckdict = str2setckdict(setckstr)
+        pobj(setckdict)
+        #attribute-name case-insensitively 
+    '''
+    l = setckstr.split(SEPARATORS['setckstr'])
+    setckdict = {}
+    ckname,ckvalue = ckpair2nv(l[0])
+    setckdict['name'] = ckname
+    setckdict['value'] = ckvalue
+    l.pop(0)
+    for ckav in l:
+        attr,value = ckav2tuple(ckav)
+        attr = uniform_ckavattr(attr)
+        if(attr):
+            setckdict[attr] = value
+        else:
+            setckdict[ckav] = True 
+    return(setckdict)
+
+def setckdict2str(setckdict,**kwargs):
+    '''
+        setckdict = {
+             'HttpOnly': True,
+             'SameSite=Strict': True,
+             'value': 'Tz98',
+             'Expires': 'Tue, 27 Mar 2018 05:30:16 -0000',
+             'Secure': True,
+             'name': '__Host-user_session',
+             'Path': '/'
+        }
+        setckstr = setckdict2str(setckdict)
+        setckstr
+    '''
+    setckdict = copy.deepcopy(setckdict)
+    setckstr = nv2ckpair(setckdict['name'],setckdict['value'])
+    setckdict.pop('name')
+    setckdict.pop('value')
+    for i in range(0,CKAVNAMES.__len__()):
+        attr = CKAVNAMES[i]
+        if(attr in setckdict):
+            value = setckdict[attr]
+            if(value == True):
+                setckstr = setckstr + SEPARATORS['setckstr'] + attr
+            else:
+                ckpair = nv2ckpair(attr,value)
+                setckstr = setckstr + SEPARATORS['setckstr'] + ckpair
+            setckdict.pop(attr)
+        else:
+            pass
+    for extav in setckdict:
+        setckstr = setckstr + SEPARATORS['setckstr'] + extav
+    return(setckstr)
+
+def sl2setckdl(setcksl):
+    '''
+        setcksl = ['BIGipServe=rd0; path=/', 'TS=0105; Path=/; Secure; HTTPOnly']
+        setckdl = sl2setckdl(setcksl)
+        pobj(setckdl)
+    '''
+    setckdl = array_map(setcksl,str2setckdict)
+    return(setckdl)
+
+def setckdl2sl(setckdl):
+    '''
+        setckdl = [{'Path': '/', 'value': 'rd0', 'name': 'BIGipServe'}, {'Secure': True, 'Path': '/', 'value': '0105', 'HttpOnly': True, 'name': 'TS'}]
+        setcksl = setckdl2sl(setckdl)
+        pobj(setcksl)
+    '''
+    setcksl = array_map(setckdl,setckdict2str)
+    return(setcksl)
+
+#命名规则  setckheaders > setcktl > setckdl > setcksl 
+
+def setckheader2str(setckheader):
+    '''
+        setckheader = 'Set-Cookie: BIGipServe=rd0; path=/'
+        setckstr = setckheader2str(setckheader)
+        setckstr
+    '''
+    return(setckheader.split(SEPARATORS['setckheader'])[1])
+
+def setckheaders2sl(setckheaders):
+    '''
+        setckhs = ['Set-Cookie: BIGipServe=rd0; path=/','Set-Cookie: TS=0105; Path=/; Secure; HTTPOnly']
+        setcksl = setckheaders2sl(setckhs)
+        pobj(setcksl)
+    '''
+    setcksl = elel.array_map(setckheaders,setckheader2str)
+    return(setcksl)
+
+def str2setckheader(setckstr):
+    '''
+        setckstr = 'BIGipServe=rd0; path=/'
+        setckheader = str2setckheader(setckstr)
+        setckheader
+    '''
+    return(TYPES['setcktype'] + SEPARATORS['setckheader']+setckstr)
+
+def sl2setckheaders(setcksl):
+    '''
+        setcksl = ['BIGipServe=rd0; path=/', 'TS=0105; Path=/; Secure; HTTPOnly']
+        setckhs = sl2setckheaders(setcksl)
+        pobj(setckhs)
+    '''
+    setckheaders = elel.array_map(setcksl,str2setckheader)
+    return(setckheaders)
+
+def setckheader2dict(setckheader):
+    '''
+        setckheader = 'Set-Cookie: BIGipServe=rd0; path=/'
+        setckdict = setckheader2dict(setckheader)
+        pobj(setckdict)
+    '''
+    setckstr = setckheader2str(setckheader)
+    setckdict = str2setckdict(setckstr)
+    return(setckdict)
+
+def setckheaders2dl(setckheaders):
+    '''
+        setckhs = ['Set-Cookie: BIGipServe=rd0; path=/','Set-Cookie: TS=0105; Path=/; Secure; HTTPOnly']
+        setckdl = setckheaders2dl(setckhs)
+        pobj(setckdl)
+    '''
+    setckdl = elel.array_map(setckheaders,setckheader2dict)
+    return(setckdl)
+
+def dict2setckheader(setckdict):
+    '''
+        setckdict = {'Path': '/', 'value': 'rd0', 'name': 'BIGipServe'}
+        setckheader = dict2setckheader(setckdict)
+        setckheader
+    '''
+    setckstr = setckdict2str(setckdict)
+    setckheader = str2setckheader(setckstr)
+    return(setckheader)
+
+def dl2setckheaders(setckdl):
+    '''
+        setckdl = [{'Path': '/', 'value': 'rd0', 'name': 'BIGipServe'}, {'Secure': True, 'Path': '/', 'value': '0105', 'HttpOnly': True, 'name': 'TS'}]
+        setckhs = dl2setckheaders(setckdl)
+        pobj(setckhs)
+    '''
+    setckhs = elel.array_map(setckdl,dict2setckheader)
+    return(setckhs)
+
+def setcktuple2str(setcktuple):
+    '''
+        setcktuple = ('Set-Cookie', '__Host-user_session=Tz98; path=/; expires=Tue, 27 Mar 2018 05:30:16 -0000; secure; HttpOnly; SameSite=Strict')
+        setckstr = setcktuple2str(setcktuple)
+        setckstr
+    '''
+    return(setcktuple[1])
+
+def setcktl2sl(setcktl):
+    '''
+        setcktl = [('Set-Cookie', 'BIGipServe=rd0; path=/'), ('Set-Cookie', 'TS=0105; Path=/; Secure; HTTPOnly')]
+        setcksl = setcktl2sl(setcktl)
+        pobj(setcksl)
+    '''
+    setcksl = array_map(setcktl,setcktuple2str)
+    return(setcksl)
+
+def str2setcktuple(setckstr):
+    '''
+        setckstr = '__Host-user_session=Tz98; path=/; expires=Tue, 27 Mar 2018 05:30:16 -0000; secure; HttpOnly; SameSite=Strict'
+        setcktuple = str2setcktuple(setckstr)
+        pobj(setcktuple)
+    '''
+    setcktuple = (TYPES['setcktype'],setckstr)
+    return(setcktuple)
+
+def sl2setcktl(setcksl):
+    '''
+        setcksl = ['BIGipServe=rd0; path=/', 'TS=0105; Path=/; Secure; HTTPOnly']
+        setcktl = sl2setcktl(setcksl)
+        pobj(setcktl)
+    '''
+    setcktl = array_map(setcksl,str2setcktuple)
+    return(setcktl)
+
+
+def setcktuple2dict(setcktuple):
+    '''
+        setcktuple = ('Set-Cookie', '__Host-user_session=Tz98; path=/; expires=Tue, 27 Mar 2018 05:30:16 -0000; secure; HttpOnly; SameSite=Strict')
+        setckdict = setcktuple2dict(setcktuple)
+        pobj(setckdict)
+    '''
+    setckstr = setcktuple2str(setcktuple)
+    setckdict = str2setckdict(setckstr)
+    return(setckdict)
+
+def setcktl2dl(setcktl):
+    '''
+        setcktl = [('Set-Cookie', 'BIGipServe=rd0; path=/'), ('Set-Cookie', 'TS=0105; Path=/; Secure; HTTPOnly')]
+        setckdl = setcktl2dl(setcktl)
+        pobj(setckdl)
+    '''
+    setckdl = elel.array_map(setcktl,setcktuple2dict)
+    return(setckdl)
+
+def dict2setcktuple(setckdict):
+    '''
+        setckdict = {'HttpOnly': True, 'SameSite=Strict': True, 'value': 'Tz98', 'Expires': 'Tue, 27 Mar 2018 05:30:16 -0000', 'Secure': True, 'name': '__Host-user_session', 'Path': '/'}
+        setcktuple = dict2setcktuple(setckdict)
+        pobj(setcktuple)
+    '''
+    setckstr = setckdict2str(setckdict)
+    setcktuple = str2setcktuple(setckstr)
+    return(setcktuple)
+
+def dl2setcktl(setckdl):
+    '''
+        setckdl = [{'Path': '/', 'value': 'rd0', 'name': 'BIGipServe'}, {'Secure': True, 'Path': '/', 'value': '0105', 'HttpOnly': True, 'name': 'TS'}]
+        setcktl = dl2setcktl(setckdl)
+        pobj(setcktl)
+    '''
+    setcktl = elel.array_map(setckdl,dict2setcktuple)
+    return(setcktl)
+
+
+
+
+#@@@@@@@@@@@@@@@@@@@@@@@@@@@2
+# def split_setckheader(setckheader,**kwargs):
+    # '''
+        # setckheader = "Set-Cookie: __Host-user_session=Tz98; path=/; expires=Tue, 27 Mar 2018 05:30:16 -0000; secure; HttpOnly; SameSite=Strict"
+        # pobj(split_setckheader(setckheader))
+    # '''
+    # if('mode' in kwargs):
+        # mode = kwargs['mode']
+    # else:
+        # mode = 'ckptl'
+    # setcktype,setckstr = tuple(ckheader.split(SEPARATORS['setckheader']))
+    # if(mode == 'ckstr'):
+        # return({'cktype':cktype,'ckstr':ckstr})
+    # elif(mode == 'ckpl'):
+        # ckpl = ckstr2pl(ckstr)
+        # return({'cktype':cktype,'ckpl':ckpl})
+    # elif(mode == 'ckptl'):
+        # ckptl = ckstr2ptl(ckstr)
+        # return({'cktype':cktype,'ckptl':ckptl})
+    # elif(mode == 'ckpdl'):
+        # ckpdl = ckstr2pdl(ckstr)
+        # return({'cktype':cktype,'ckpdl':ckpdl})
+    # elif(mode == 'ckdict'):
+        # ckdict = ckstr2dict(ckstr)
+        # return({'cktype':cktype,'ckdict':ckdict})
+    # else:
+        # print("unknow mode")
+        # return(None)
+
+
+
+
+
+        
+#ckavattr            ['expires','max-age','domain','path','secure','httponly']
+#expav             expires-av 
+#expval            expires-value sane-cookie-date 
+#mageav            max-age-av 
+#mageval           max-age-value 
+#domav             domain-av 
+#domval            domain-value 
+#pathav            path-av 
+#pathval           path-value
+#secuav            secure-av 
+#honlyav           httponly-av 
+#extav             extension-av  #<any CHAR except CTLs or ";">
+#ckav              expav | mageav |domav | pathav | secuav | honlyav | extav          #cookie-av ##attribute-name case-insensitively 
+
+
+def uniform_ckavattr(ckavattr,**kwargs):
+    '''
+        uniform_ckavattr('expires')
+        uniform_ckavattr('max-Age')
+    '''
+    ckavattr = ckavattr.lower()
+    cond = (ckavattr in CKAVLOWERNAMES)
+    if(cond):
+        index = CKAVLOWERNAMES.index(ckavattr)
+        return(CKAVNAMES[index])
+    else:
+        return(None)
+
+def ckav2tuple(ckav,**kwargs):
+    regex = re.compile("(.*?)=(.*)")
+    m = regex.search(ckav)
+    if(m):
+        k = m.group(1)
+        v = m.group(2)
+    else:
+        k = ckav
+        v = True
+    return((k,v))
+
+
 
