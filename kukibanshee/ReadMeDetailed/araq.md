@@ -1,4 +1,9 @@
 
+
+__0. str_lstrip(s,char,count)__  
+
+__0. str_rstrip(s,char,count)__  
+
 __1. \_real_dollar(s,sre\_match)__  
 
 __2. \_creat\_regex(unescaped\_regex\_str,**kwargs)__
