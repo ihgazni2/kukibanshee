@@ -155,7 +155,7 @@ for detailed usage and functions please refer to:
 ----------------------------------------------------------------
 
 ## set-cookie-header  
----------------------------------------------------------------------------
+----------------------------------------------------------------------------
 >├──0. [setckheader2tuple](kukibanshee/Images/setckheader2tuple.0.png)  <br>
 ├──1. [tuple2setckheader](kukibanshee/Images/setckheader2tuple.0.png)  <br>
 ├──2. [tl2setckheaders](kukibanshee/Images/tl2setckheaders.0.png)  <br>
@@ -183,8 +183,8 @@ for detailed usage and functions please refer to:
 ├──24. [dl2setcktl](kukibanshee/Images/dl2setcktl.0.png)  <br>
 ├──25. [split_setckheader](kukibanshee/Images/split_setckheader.0.png)  <br>
 ├──26. [detect_setckbody](kukibanshee/Images/detect_setckbody.0.png)  <br>
+├──27. [validate_setckstr](kukibanshee/Images/validate_setckstr.0.png)  <br>
+├──28. [validate_setckheader](kukibanshee/Images/validate_setckheader.0.png)  <br>
 
-
-
---------------------------------------------------------------------------
+----------------------------------------------------------------------------------
 
