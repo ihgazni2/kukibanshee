@@ -183,7 +183,17 @@ def is_extension_av(s):
     m=regex.search(s)
     return(bool(araq._real_dollar(s,m)))
 
-def is_domain_value(s):
+def remove_domain_leading_dot(domain):
+    '''
+        Note that a leading %x2E ("."), if present,
+        is ignored even though that character is not permitted, 
+        but a trailing %x2E ("."), if present, 
+        will cause the user agent to ignore   the attribute.
+    '''
+    domain = araq.str_lstrip(domain,".",1)
+    return(domain)
+
+def is_domain_value(s,**kwargs):
     '''
         domain-value = <subdomain>; 
         defined in [RFC1034], Section 3.5
@@ -197,6 +207,14 @@ def is_domain_value(s):
         enhanced by [RFC1123], Section 2.1
         
     '''
+    if('mode' in kwargs):
+        mode = kwargs['mode']
+    else:
+        mode = 'loose'
+    if(mode == 'strict'):
+        pass
+    else:
+        s = remove_domain_leading_dot(s)
     regex_label = re.compile("^[a-zA-Z](([0-9a-zA-Z\-])*[0-9a-zA-Z])*$")
     arr = s.split(".")
     rslt = True
@@ -214,7 +232,7 @@ def is_domain_av(s):
     '''
         "Domain=" domain-value  
     '''
-    prefix = s[:7]
+    prefix = str.lower(s[:7])
     if(prefix == "domain="):
         dm = s[8:]
         return(is_domain_value(dm))
@@ -589,5 +607,48 @@ def parse_cookie_date(s):
             pass
     cookie_date_dict['_timestamp'] = nozdormu.str2ts(s)
     return(cookie_date_dict)
+
+#@@@@
+
+def domain_in_domain(dom1,dom2):
+    '''
+        domain_in_domain('www.baidu.com','baidu.com')
+    '''
+    dom2 = dom2.lower()
+    dom1 = dom1.lower()
+    dom1_arr = dom1.split(".")
+    dom2_arr = dom2.split(".")
+    length1 = dom1_arr.__len__()
+    length2 = dom2_arr.__len__()
+    if(length1 < length2):
+        return(False)
+    else:
+        dom1_arr.reverse()
+        dom2_arr.reverse()
+        for i in range(length2-1,-1,-1):
+            cond = (dom1_arr[i] == dom2_arr[i])
+            if(cond):
+                pass
+            else:
+                return(False)
+        return(True)
+
+def origin_in_domain(src_url,domain):
+    '''
+        origin_in_domain('http://foo.example.com',"example.com")
+        origin_in_domain('http://foo.example.com',"baz.foo.example.com")
+        
+        The user agent will reject cookies unless the Domain attribute
+        specifies a scope for the cookie that would include the origin server.
+        For example, the user agent will accept a cookie with a Domain attribute
+        of "example.com" or of "foo.example.com" from foo.example.com, but the 
+        user agent will not accept a cookie with a Domain attribute of "bar.example.com" 
+        or of "baz.foo.example.com".
+    '''
+    domain = remove_domain_leading_dot(domain)
+    netloc =  urllib.parse.urlparse(src_url).netloc
+    netloc = remove_domain_leading_dot(netloc)
+    cond = domain_in_domain(netloc,domain)
+    return(cond)
 
 
