@@ -1980,3 +1980,24 @@ def get_ckavalue(setckbody,ckavattr,**kwargs):
     else:
         print("not exist")
         return(None)
+
+
+
+def detect_ckav(ckav,**kwargs):
+    '''
+        ckav = "path=/"
+        detect_ckav(ckav)
+        ckav = "expires=Tue, 27 Mar 2018 05:30:16 -0000"
+        detect_ckav(ckav)
+        ckav = "HttpOnly"
+        detect_ckav(ckav)
+        ckav = "SameSite=Strict"
+        detect_ckav(ckav)
+    '''
+    t = ckav2tuple(ckav)
+    key = t[0]
+    key = uniform_ckavattr(key)
+    if(key):
+        return(key)
+    else:
+        return('extension-av')
