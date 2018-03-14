@@ -31,6 +31,7 @@ def detect_time_fmt(date_value,**kwargs):
     month = 'Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec'
     weekday = 'Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday'
     wkday = 'Mon|Tue|Wed|Thu|Fri|Sat|Sun'
+    ####
     rfc1123 = ''.join(("(",wkday,")",", ","[0-9]{2} ","(",month,")"," [0-9]{4} ","[0-9]{2}:[0-9]{2}:[0-9]{2} ","GMT"))
     rfc1123 = "^" + rfc1123 + "$"
     regex_rfc1123 = re.compile(rfc1123)
@@ -38,6 +39,10 @@ def detect_time_fmt(date_value,**kwargs):
     rfc1123_tzoffset = ''.join(("(",wkday,")",", ","[0-9]{2} ","(",month,")"," [0-9]{4} ","[0-9]{2}:[0-9]{2}:[0-9]{2} ","[\+\-][0-9]{4}"))
     rfc1123_tzoffset = "^" + rfc1123_tzoffset + "$"
     regex_rfc1123_tzoffset = re.compile(rfc1123_tzoffset)
+    ####
+    rfc1123_notz = ''.join(("(",wkday,")",", ","[0-9]{2} ","(",month,")"," [0-9]{4} ","[0-9]{2}:[0-9]{2}:[0-9]{2}"))
+    rfc1123_notz = "^" + rfc1123_notz + "$"
+    regex_rfc1123_notz = re.compile(rfc1123_notz)
     ####
     rfc1123_hypen = ''.join(("(",wkday,")",", ","[0-9]{2}-","(",month,")","-[0-9]{4} ","[0-9]{2}:[0-9]{2}:[0-9]{2} ","GMT"))
     regex_rfc1123_hypen = "^" + rfc1123_hypen + "$"
@@ -54,6 +59,8 @@ def detect_time_fmt(date_value,**kwargs):
     if(mode == 'strict'):
         if(araq._real_dollar(date_value,regex_rfc1123)):
             return('rfc1123')
+        elif(araq._real_dollar(date_value,regex_rfc1123_notz)):
+            return('rfc1123_notz')
         elif(araq._real_dollar(date_value,regex_rfc1123_tzoffset)):
             return('rfc1123_tzoffset')
         elif(araq._real_dollar(date_value,regex_rfc1123_hypen)):
@@ -69,8 +76,10 @@ def detect_time_fmt(date_value,**kwargs):
     else:
         if(regex_rfc1123.search(date_value)):
             return('rfc1123')
-        if(regex_rfc1123_tzoffset.search(date_value)):
+        elif(regex_rfc1123_tzoffset.search(date_value)):
             return('rfc1123_tzoffset')
+        elif(regex_rfc1123_notz.search(date_value)):
+            return('rfc1123_notz')
         elif(regex_rfc1123_hypen.search(date_value)):
             return('rfc1123_hypen')
         elif(regex_rfc850.search(date_value)):
@@ -87,12 +96,14 @@ def detect_time_fmt(date_value,**kwargs):
 
 TIMEFMT = {
     'rfc1123':'%a, %d %b %Y %H:%M:%S GMT',
+    'rfc1123_notz':'%a, %d %b %Y %H:%M:%S',
     'rfc1123_tzoffset':'%a, %d %b %Y %H:%M:%S %z',
     'rfc1123_hypen':'%a, %d-%b-%Y %H:%M:%S GMT',
     'rfc850':'%A, %d-%b-%y %H:%M:%S GMT',
     'rfc850_a':'%a, %d-%b-%y %H:%M:%S GMT',
     'asctime':'%a, %b %d %H:%M:%S %Y',
     '%a, %d %b %Y %H:%M:%S GMT':'rfc1123',
+    '%a, %d %b %Y %H:%M:%S':'rfc1123_notz'
     '%a, %d %b %Y %H:%M:%S %z':'rfc1123_tzoffset',
     '%a, %d-%b-%Y %H:%M:%S GMT':'rfc1123_hypen',
     '%A, %d-%b-%y %H:%M:%S GMT':'rfc850',
