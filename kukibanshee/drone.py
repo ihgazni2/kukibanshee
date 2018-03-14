@@ -1919,7 +1919,7 @@ def validate_setckheader(setckheader,**kwargs):
     rslt = split_setckheader(setckheader,mode = 'setckstr')
     setcktype = rslt['setcktype']
     setckstr  = rslt['setckstr']
-    cond1 = (rslt['setcktype'] = TYPES['setcktype'])
+    cond1 = (rslt['setcktype'] == TYPES['setcktype'])
     cond2 = validate_setckstr(setckstr)
     cond = (cond1 & cond2)
     return(cond)
