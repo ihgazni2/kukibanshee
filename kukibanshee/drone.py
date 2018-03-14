@@ -2001,3 +2001,12 @@ def detect_ckav(ckav,**kwargs):
         return(key)
     else:
         return('extension-av')
+
+
+def validate_ckav(ckav,**kwargs):
+    '''
+    '''
+    cond = rfc6265.is_cookie_av(ckav)
+    return(cond)
+
+
