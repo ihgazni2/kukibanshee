@@ -103,7 +103,7 @@ TIMEFMT = {
     'rfc850_a':'%a, %d-%b-%y %H:%M:%S GMT',
     'asctime':'%a, %b %d %H:%M:%S %Y',
     '%a, %d %b %Y %H:%M:%S GMT':'rfc1123',
-    '%a, %d %b %Y %H:%M:%S':'rfc1123_notz'
+    '%a, %d %b %Y %H:%M:%S':'rfc1123_notz',
     '%a, %d %b %Y %H:%M:%S %z':'rfc1123_tzoffset',
     '%a, %d-%b-%Y %H:%M:%S GMT':'rfc1123_hypen',
     '%A, %d-%b-%y %H:%M:%S GMT':'rfc850',
