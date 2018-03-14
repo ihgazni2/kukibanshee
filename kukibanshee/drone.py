@@ -77,6 +77,18 @@ def help():
         print(doc)
 
 
+VALIDATEFUNCS = {
+    'name': rfc6265.is_cookie_name,
+    'value': rfc6265.is_cookie_value,
+    'Expires': rfc6265.is_expires_av,
+    'Max-Age': rfc6265.is_maxage_av,
+    'Path': rfc6265.is_path_av,
+    'Domain': rfc6265.is_domain_av,
+    'Secure': rfc6265.is_secure_av,
+    'HttpOnly': rfc6265.is_httponly_av,
+    'extension-av':rfc6265.is_extension_av
+}
+
 SEPARATORS = {
     'ckheader':': ',
     'ckstr':'; ',
@@ -1224,7 +1236,7 @@ def select_ckheader(ckheader,*cknames,**kwargs):
 def is_ckheader(ckheader,**kwargs):
     '''
         roughly check
-        the detail check : rfc6265.is_cookie_header
+        the detail check : validate = True 
     '''
     if('validate' in kwargs):
         valid = validate_ckheader(ckheader)
@@ -1798,7 +1810,6 @@ def sl2setcktl(setcksl):
     setcktl = array_map(setcksl,str2setcktuple)
     return(setcktl)
 
-
 def setcktuple2dict(setcktuple):
     '''
         setcktuple = ('Set-Cookie', '__Host-user_session=Tz98; path=/; expires=Tue, 27 Mar 2018 05:30:16 -0000; secure; HttpOnly; SameSite=Strict')
@@ -1883,6 +1894,37 @@ def detect_setckbody(setckbody,**kwargs):
         return(None)
 
 
+def validate_setckstr(setckstr,**kwargs):
+    '''
+        setckstr = "__Host-user_session=Tz98; path=/; expires=Tue, 27 Mar 2018 05:30:16 -0000; secure; HttpOnly; SameSite=Strict"
+        
+    '''
+    setckdict = str2setckdict(setckstr)
+    cond = True
+    for key in setckdict:
+        value = get_ckavalue(setckdict,key)
+        if(key in VALIDATEFUNCS):
+            cond = VALIDATEFUNCS[key](value)
+        else:
+            cond = VALIDATEFUNCS['extension-av'](value)
+        if(cond):
+            pass
+        else:
+            return(False)
+    return(cond)
+
+def validate_setckheader(setckheader,**kwargs):
+    '''
+    '''
+    rslt = split_setckheader(setckheader,mode = 'setckstr')
+    setcktype = rslt['setcktype']
+    setckstr  = rslt['setckstr']
+    cond1 = (rslt['setcktype'] = TYPES['setcktype'])
+    cond2 = validate_setckstr(setckstr)
+    cond = (cond1 & cond2)
+    return(cond)
+    
+
 #ckavattr            ['expires','max-age','domain','path','secure','httponly']
 #expav             expires-av 
 #expval            expires-value sane-cookie-date 
@@ -1927,6 +1969,8 @@ def ckav2tuple(ckav,**kwargs):
         
         ckav = 'HttpOnly'
         ckav2tuple(ckav)
+        
+        #note :extension-av will be splited 
     '''
     regex = re.compile("(.*?)=(.*)")
     m = regex.search(ckav)
@@ -1981,8 +2025,6 @@ def get_ckavalue(setckbody,ckavattr,**kwargs):
         print("not exist")
         return(None)
 
-
-
 def detect_ckav(ckav,**kwargs):
     '''
         ckav = "path=/"
@@ -2001,12 +2043,12 @@ def detect_ckav(ckav,**kwargs):
         return(key)
     else:
         return('extension-av')
-
-
+    
 def validate_ckav(ckav,**kwargs):
     '''
     '''
     cond = rfc6265.is_cookie_av(ckav)
     return(cond)
-
+    
+    
 
