@@ -13,7 +13,7 @@ __5. creat\_regex\_from\_arr(chars_arr)__ <br>
 __6. creat\_regex\_not\_from\_arr(chars_arr)__ <br>
 
 -----------
-_class FSM
+#_class FSM
 -----------
 
 __1. \_\_init\_\_(self,**kwargs)__ <br>
