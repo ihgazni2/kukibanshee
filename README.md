@@ -148,6 +148,9 @@ for detailed usage and functions please refer to:
 ├──1. [ckav2tuple](kukibanshee/Images/ckav2tuple.0.png)  <br>
 ├──2. [get_ckavalue](kukibanshee/Images/get_ckavalue.0.png)  <br>
 ├──3. [detect_ckav](kukibanshee/Images/detect_ckav.0.png)  <br>
+├──4. [validate_ckav](kukibanshee/Images/validate_ckav.0.png)  <br>
+
+
 
 ----------------------------------------------------------------
 
