@@ -12,11 +12,11 @@ __5. creat\_regex\_from\_arr(chars_arr)__ <br>
 
 __6. creat\_regex\_not\_from\_arr(chars_arr)__ <br>
 
------------  
+--------------  
 
-class FSM
+## _class_ FSM
 
------------
+---------------
 
 __1. \_\_init\_\_(self,**kwargs)__ <br>
 __2. help(self)__ <br>
