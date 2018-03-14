@@ -1,4 +1,3 @@
-
 import re
 import urllib.parse
 from kukibanshee import araq
@@ -313,9 +312,13 @@ def is_cookie_date(s):
     return(is_date_token_list(dtl))
 
 def is_time(s):
-    '''time            = hms-time ( non-digit *OCTET )'''
+    '''
+        time            = hms-time ( non-digit *OCTET )
+        cant understand why ( non-digit *OCTET )
+    '''
     regex_str = "^([0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2})"
-    nds = "[" + re.escape(araq.CONST_STR['ndigits']) + "]"
+    #cant understand why ( non-digit *OCTET )
+    nds = "[" + re.escape(araq.CONST_STR['ndigits']) + "]{0,1}"
     prefix = "["
     octs = re.escape(araq.CONST_STR['octs'])
     suffix = "]*$"
@@ -326,13 +329,19 @@ def is_time(s):
     return(rslt)
 
 def is_year(s):
-    '''year = 2*4DIGIT ( non-digit *OCTET )'''
-    regex_str = "^([0-9]{2,4})"
-    nds = "[" + re.escape(araq.CONST_STR['ndigits']) + "]"
-    prefix = "["
-    octs = re.escape(araq.CONST_STR['octs'])
-    suffix = "]*$"
-    regex_str = regex_str + nds + prefix + octs + suffix
+    '''
+        year = 2*4DIGIT ( non-digit *OCTET )
+        cant understand why ( non-digit *OCTET )
+    '''
+    # regex_str = "^([0-9]{2,4})"
+    #cant understand why ( non-digit *OCTET )
+    # nds = "[" + re.escape(araq.CONST_STR['ndigits']) + "]{0,1}"
+    # prefix = "["
+    # octs = re.escape(araq.CONST_STR['octs'])
+    # suffix = "]*$"
+    # regex_str = regex_str + nds + prefix + octs + suffix
+    #avoid conflict with day-of-month ,only support 4numbers year
+    regex_str = "^([0-9]{4})$"
     regex = re.compile(regex_str)
     m=regex.search(s)
     rslt = (bool(araq._real_dollar(s,m)))
@@ -346,7 +355,7 @@ def is_month(s,**kwargs):
     if('mode' in kwargs):
        mode = kwargs['mode']
     else:
-        mode = 'strict'
+        mode = 'loose'
     if(mode == 'loose'):
         s = str.lower(s)
     else:
@@ -362,13 +371,18 @@ def is_month(s,**kwargs):
     return(rslt)
 
 def is_day_of_month(s,**kwargs):
-    '''day-of-month    = 1*2DIGIT ( non-digit *OCTET )'''
-    regex_str = "^[0-9]{1,2}"
-    ndts = re.escape(araq.CONST_STR['ndigits'])
-    prefix = "["
-    octs = re.escape(araq.CONST_STR['octs'])
-    suffix = "]*$"
-    regex_str = regex_str + "[" + ndts + "]" + prefix + octs + suffix
+    '''
+        day-of-month    = 1*2DIGIT ( non-digit *OCTET )
+        cant understand why ( non-digit *OCTET )
+    '''
+    # regex_str = "^[0-9]{1,2}"
+    # ndts = re.escape(araq.CONST_STR['ndigits'])
+    # prefix = "["
+    # octs = re.escape(araq.CONST_STR['octs'])
+    # suffix = "]*$"
+    #cant understand why ( non-digit *OCTET )
+    # regex_str = regex_str + "[" + ndts + "]{0,1}" + prefix + octs + suffix
+    regex_str = "^[0-9]{1,2}$"
     regex = re.compile(regex_str)
     m=regex.search(s)
     rslt = (bool(araq._real_dollar(s,m)))
@@ -457,6 +471,8 @@ def split_cookie_date_str(s):
 
 def parse_cookie_date(s):
     '''
+        cookie_date_dict = parse_cookie_date('Tue, 27 Mar 2018 05:30:16')
+        pobj(cookie_date_dict)
         #rfc6265 Page-14 Page-15
         2. Process each date-token sequentially in the order the date-tokens appear in the cookie-date:
         
@@ -516,44 +532,44 @@ def parse_cookie_date(s):
             if(cond):
                 tmp = tok.split(":")
                 if((int(tmp[0])<0) | (int(tmp[0])>23)):
-                    return(None)
+                    pass
                 else:
                     cookie_date_dict['hour-value'] = int(tmp[0])
                 if((int(tmp[1])<0) | (int(tmp[1])>59)):
-                    return(None)
+                    pass
                 else:
                     cookie_date_dict['minute-value'] = tmp[1]
                 if((int(tmp[2])<0) | (int(tmp[2])>59)):
-                    return(None)
+                    pass
                 else:
                     cookie_date_dict['second-value'] = tmp[2]
                 cookie_date_dict['found-time'] = True
                 tests.remove('hms-time')
             else:
                 pass
-        elif('day-of-month' in tests):
+        if('day-of-month' in tests):
             cond = CORERULES['day-of-month'](tok)
             if(cond):
                 regex = re.compile("[0-9]{1,2}")
                 tmp = regex.search(tok).group(0)
                 if((int(tmp)<1) | (int(tmp)>31)):
-                    return(None)
+                    pass
                 else:
                     cookie_date_dict['day-of-month-value'] = int(tmp)
                 cookie_date_dict['found-day-of-month'] = True
                 tests.remove('day-of-month')
             else:
                 pass
-        elif('month' in tests):
+        if('month' in tests):
             cond = CORERULES['month'](tok)
             if(cond):
                 tmp = tok[0:3]
-                cookie_date_dict['month-value'] = int(tmp)
+                cookie_date_dict['month-value'] = tmp
                 cookie_date_dict['found-month'] = True
                 tests.remove('month')
             else:
                 pass
-        elif('year' in tests):
+        if('year' in tests):
             cond = CORERULES['year'](tok)
             if(cond):
                 regex = re.compile("[0-9]{2,4}")
@@ -574,4 +590,4 @@ def parse_cookie_date(s):
     cookie_date_dict['_timestamp'] = nozdormu.str2ts(s)
     return(cookie_date_dict)
 
-########################
+
