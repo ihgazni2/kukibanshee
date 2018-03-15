@@ -4,12 +4,19 @@ from kukibanshee import araq
 from kukibanshee import nozdormu
 from kukibanshee import symmtera
 
+#refer to http://publicsuffix.org/
+#refer to https://publicsuffix.org/list/public_suffix_list.dat
+
 PUBLICSUFFIXES = []
 
-def is_public_suffixes(domain):
+def is_public_suffixes(domain,**kwargs):
     '''
     '''
-    cond = (domain in PUBLICSUFFIXES)
+    if('public' in kwargs):
+        public_suffixes = kwargs['public']
+    else:
+        public_suffixes = PUBLICSUFFIXES
+    cond = (domain in public_suffixes)
     return(cond)
 
 def is_cookie_octet(c):
@@ -680,7 +687,7 @@ def in_domain(domain,**kwargs):
     if('public' in kwargs):
         reject_public_suffixes = kwargs['public']
     else:
-        reject_public_suffixes=[]
+        reject_public_suffixes=PUBLICSUFFIXES
     cond_src = origin_in_domain(src_url,domain)
     cond_dst = target_in_domain(dst_url,domain)
     cond_pub_suffixes = True
