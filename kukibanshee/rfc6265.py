@@ -659,6 +659,11 @@ def origin_in_domain(server_url,domain):
         or of "baz.foo.example.com".
     '''
     domain = remove_domain_leading_dot(domain)
+    if(is_domain_value(server_url)):
+        server_url = '//'+server_url
+    else:
+        #url
+        pass
     netloc =  urllib.parse.urlparse(server_url).netloc
     netloc = remove_domain_leading_dot(netloc)
     cond = domain_in_domain(netloc,domain)
