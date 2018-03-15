@@ -1570,7 +1570,7 @@ def uniqualize(horb,*cknames,**kwargs):
 # 因为每个set-cookie-header 只能包含一条cookie-pair,所以只要支持python返回的一种数据格式setcktuple即可
 #setckheader       set-cookie-header     "Set-Cookie: __Host-user_session=Tz98; path=/; expires=Tue, 27 Mar 2018 05:30:16 -0000; secure; HttpOnly; SameSite=Strict"
 #setcktuple        set-cookie-tuple     ('Set-Cookie', 'TSPD_101_R0=e7b7; Max-Age=5; Path=/secure/abc.htm')
-
+#setck             setckheader | setcktuple
 
 #setcktype         set-cookie-type       "Set-Cookie"
 #一个response 中可能包含多条 set-cookie-header
@@ -1848,6 +1848,36 @@ def dl2setcktl(setckdl):
     setcktl = elel.array_map(setckdl,dict2setcktuple)
     return(setcktl)
 
+
+def detect_setck(setck,**kwargs):
+    '''
+    '''
+    if(type(setck) == type('')):
+        return('setckheader')
+    elif(type() == type(())):
+        return('setcktuple')
+    else:
+        print('currently only support two format: setck = setckheader|setcktuple')
+        return(None)
+
+def split_setck(setck,**kwargs):
+    '''
+    '''
+    from_mode = detect_setck(setck)
+    if(from_mode == 'setckheader'):
+        setckheader = setck
+    elif(from_mode == 'setcktuple'):
+        setckheader = tuple2setckheader(setck)
+    else:
+        print("Unknown...")
+        return(None)
+    if('mode' in kwargs):
+        mode = kwargs['mode']
+    else:
+        mode = 'setckdict'
+    return(split_setckheader(setckheader,mode=mode))    
+
+
 def split_setckheader(setckheader,**kwargs):
     '''
         setckheader = "Set-Cookie: __Host-user_session=Tz98; path=/; expires=Tue, 27 Mar 2018 05:30:16 -0000; secure; HttpOnly; SameSite=Strict"
@@ -1868,6 +1898,8 @@ def split_setckheader(setckheader,**kwargs):
     else:
         print("unknow mode")
         return(None)
+
+
 
 def detect_setckbody(setckbody,**kwargs):
     '''
