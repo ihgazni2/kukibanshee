@@ -186,6 +186,9 @@ for detailed usage and functions please refer to:
 ├──26. [detect_setckbody](kukibanshee/Images/detect_setckbody.0.png)  <br>
 ├──27. [validate_setckstr](kukibanshee/Images/validate_setckstr.0.png)  <br>
 ├──28. [validate_setckheader](kukibanshee/Images/validate_setckheader.0.png)  <br>
+├──29. [detect_setck](kukibanshee/Images/detect_setck.0.png)  <br>
+├──30. [split_setck](kukibanshee/Images/split_setck.0.png)  <br>
+
 
 ----------------------------------------------------------------------------------
 
