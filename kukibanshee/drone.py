@@ -1854,7 +1854,7 @@ def detect_setck(setck,**kwargs):
     '''
     if(type(setck) == type('')):
         return('setckheader')
-    elif(type() == type(())):
+    elif(type(setck) == type(())):
         return('setcktuple')
     else:
         print('currently only support two format: setck = setckheader|setcktuple')
