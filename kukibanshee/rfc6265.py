@@ -4,6 +4,14 @@ from kukibanshee import araq
 from kukibanshee import nozdormu
 from kukibanshee import symmtera
 
+PUBLICSUFFIXES = []
+
+def is_public_suffixes(domain):
+    '''
+    '''
+    cond = (domain in PUBLICSUFFIXES)
+    return(cond)
+
 def is_cookie_octet(c):
     '''
         %x21 / %x23-2B / %x2D-3A / %x3C-5B / %x5D-7E; 

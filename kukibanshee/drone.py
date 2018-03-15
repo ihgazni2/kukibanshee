@@ -1862,6 +1862,13 @@ def detect_setck(setck,**kwargs):
 
 def split_setck(setck,**kwargs):
     '''
+        setck = ('Set-Cookie', '__Host-user_session=Tz98; path=/; expires=Tue, 27 Mar 2018 05:30:16 -0000; secure; HttpOnly; SameSite=Strict')
+        setckdict = drone.split_setck(setck)
+        pobj(setckdict)
+        ####
+        setck = 'Set-Cookie: BIGipServe=rd0; path=/'
+        setckdict = drone.split_setck(setck)
+        pobj(setckdict)
     '''
     from_mode = detect_setck(setck)
     if(from_mode == 'setckheader'):
