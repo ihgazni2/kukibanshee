@@ -91,7 +91,7 @@ def is_sane_cookie_date(s,**kwargs):
         wkday = "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat" | "Sun"
         rfc1123-date = wkday "," SP date1 SP time SP "GMT"
     '''
-    if(mode in kwargs):
+    if('mode' in kwargs):
         mode = kwargs['mode']
     else:
         mode = 'strict'
