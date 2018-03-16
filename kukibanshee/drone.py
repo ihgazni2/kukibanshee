@@ -1904,7 +1904,7 @@ def unquote_setck(setck,**kwargs):
         plus = kwargs['plus']
     else:
         plus = True
-    setckstr = split_setck(setck)['setckstr']
+    setckstr = split_setck(setck,mode='setckstr')['setckstr']
     if('plus'):
         setckstr = urllib.parse.unquote_plus(setckstr)
     else:
