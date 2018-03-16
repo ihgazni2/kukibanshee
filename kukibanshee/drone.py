@@ -2,7 +2,7 @@ import elist.elist as elel
 from kukibanshee import rfc6265
 import re
 import copy
-
+import urllib.parse
 
 def help():
     if(func_name == ''):
@@ -1444,6 +1444,18 @@ def uniqualize_ckheader(ckheader,*cknames,**kwargs):
     return(ckheader)
 
 
+def quote_ckheader(ckheader,**kwargs):
+    if('plus' in kwargs):
+        plus = kwargs['plus']
+    else:
+        plus = True
+    if('plus'):
+        ckheader = urllib.parse.quote_plus(ckheader)
+    else:
+        ckheader = urllib.parse.quote(ckheader)
+    return(ckheader)    
+
+
 #wrapped API: apply to either ckbody or ckheader
 def select(horb,*cknames,**kwargs):
     '''
@@ -1883,6 +1895,22 @@ def split_setck(setck,**kwargs):
     else:
         mode = 'setckdict'
     return(split_setckheader(setckheader,mode=mode))    
+
+
+def unquote_setck(setck,**kwargs):
+    '''
+    '''
+    if('plus' in kwargs):
+        plus = kwargs['plus']
+    else:
+        plus = True
+    setckstr = split_setck(setck)['setckstr']
+    if('plus'):
+        setckstr = urllib.parse.unquote_plus(setckstr)
+    else:
+        setckstr = urllib.parse.unquote(setckstr)
+    return(TYPES['setcktype']+ SEPARATORS['setckheader'] + setckstr)
+
 
 
 def split_setckheader(setckheader,**kwargs):
