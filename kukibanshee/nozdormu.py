@@ -2,6 +2,9 @@ import re
 import time
 import datetime
 from kukibanshee import araq
+#from tzlocal import get_localzone
+#LOCAL_ZONE = get_localzone()
+#int(LOCAL_ZONE.dst(datetime.datetime.utcfromtimestamp(t//1000)).seconds)*1000
 
 
 def detect_time_fmt(date_value,**kwargs):
