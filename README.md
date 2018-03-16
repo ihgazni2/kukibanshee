@@ -128,6 +128,8 @@ for detailed usage and functions please refer to:
 ├──8. [remove_ckheader](kukibanshee/Images/remove_ckheader.0.png)  <br>
 ├──9. [replace_ckheader](kukibanshee/Images/replace_ckheader.0.png)  <br>
 ├──10. [uniqualize_ckheader](kukibanshee/Images/uniqualize_ckheader.0.png)  <br>
+├──11. [quote_ckheader](kukibanshee/Images/quote_ckheader.0.png)  <br>
+
 
 ------------------------------------------------------------------------------
 
@@ -188,6 +190,7 @@ for detailed usage and functions please refer to:
 ├──28. [validate_setckheader](kukibanshee/Images/validate_setckheader.0.png)  <br>
 ├──29. [detect_setck](kukibanshee/Images/detect_setck.0.png)  <br>
 ├──30. [split_setck](kukibanshee/Images/split_setck.0.png)  <br>
+├──31. [unquote_setck](kukibanshee/Images/unquote_setck.0.png)  <br>
 
 
 ----------------------------------------------------------------------------------
