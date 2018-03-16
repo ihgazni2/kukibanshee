@@ -95,7 +95,7 @@ def is_sane_cookie_date(s,**kwargs):
         mode = kwargs['mode']
     else:
         mode = 'strict'
-    tf = nozdormu.detect_time_format(date_value)
+    tf = nozdormu.detect_time_fmt(date_value)
     if(mode == 'strict'):
         cond = ('rfc1123' == tf)
     else:
