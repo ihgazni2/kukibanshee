@@ -646,6 +646,15 @@ def domain_in_domain(dom1,dom2):
                 return(False)
         return(True)
 
+def format_origin(server_url):
+    if(is_domain_value(server_url)):
+        server_url = '//'+server_url
+    else:
+        #url
+        pass
+    netloc =  urllib.parse.urlparse(server_url).netloc
+    return(netloc)
+
 def origin_in_domain(server_url,domain):
     '''
         origin_in_domain('http://foo.example.com',"example.com")
@@ -659,12 +668,7 @@ def origin_in_domain(server_url,domain):
         or of "baz.foo.example.com".
     '''
     domain = remove_domain_leading_dot(domain)
-    if(is_domain_value(server_url)):
-        server_url = '//'+server_url
-    else:
-        #url
-        pass
-    netloc =  urllib.parse.urlparse(server_url).netloc
+    netloc = format_origin(server_url)
     netloc = remove_domain_leading_dot(netloc)
     cond = domain_in_domain(netloc,domain)
     return(cond)
