@@ -98,8 +98,11 @@ def is_sane_cookie_date(s,**kwargs):
     tf = nozdormu.detect_time_fmt(s)
     if(mode == 'strict'):
         cond = ('rfc1123' == tf)
+    elif(mode == 'rfc1123-loose'):
+        cond = ('rfc1123' in tf)
     else:
-        cond = ('rfc1123' in tf) 
+        #实际应用中rfc1123,rfc1123_tzoffset,rfc850_a,都有
+        cond = True
     if(cond):
         return(True)
     else:
