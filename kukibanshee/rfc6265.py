@@ -138,7 +138,7 @@ def is_max_age_value(s):
     '''
     regex= re.compile("^[1-9][0-9]*$")
     m = regex.search(s)
-    return(bool(_real_dollar(s,m)))
+    return(bool(araq._real_dollar(s,m)))
 
 def is_maxage_av(s):
     '''
@@ -153,7 +153,7 @@ def is_maxage_av(s):
         nums = s[9:]
         regex= re.compile("^[1-9][0-9]*$")
         m = regex.search(nums)
-        return(bool(_real_dollar(nums,m)))
+        return(bool(araq._real_dollar(nums,m)))
     else:
         return(False)
 
@@ -328,7 +328,7 @@ def is_date_token_list(s):
     ads = re.escape(araq.CONST_STR['dels'])
     regex_str = "^[" + dt + "]+" +"([" +ads+ "]+"+"[" + dt + "]+)*$"
     m=regex.search(s)
-    return(bool(_real_dollar(s,m)))
+    return(bool(araq._real_dollar(s,m)))
 
 def is_cookie_date(s):
     '''cookie-date     = *delimiter date-token-list *delimiter'''
