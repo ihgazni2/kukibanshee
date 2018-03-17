@@ -632,6 +632,8 @@ def domain_in_domain(dom1,dom2):
     '''
     dom2 = dom2.lower()
     dom1 = dom1.lower()
+    dom2 = remove_domain_leading_dot(dom2) 
+    dom1 = remove_domain_leading_dot(dom1)
     dom1_arr = dom1.split(".")
     dom2_arr = dom2.split(".")
     length1 = dom1_arr.__len__()
