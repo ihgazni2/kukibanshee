@@ -6,6 +6,16 @@ from kukibanshee import araq
 #LOCAL_ZONE = get_localzone()
 #int(LOCAL_ZONE.dst(datetime.datetime.utcfromtimestamp(t//1000)).seconds)*1000
 
+#    08-Feb-1994 14:15:29 GMT            -- broken rfc850 format (no weekday) 
+
+
+#    1994-02-03 14:15:29 -0100    -- ISO 8601 format 
+#    1994-02-03 14:15:29          -- zone is optional 
+#    1994-02-03                   -- only date 
+#    1994-02-03T14:15:29          -- Use T as separator 
+#    19940203T141529Z             -- ISO 8601 compact format 
+#    19940203                     -- only date 
+
 
 def detect_time_fmt(date_value,**kwargs):
     '''
@@ -35,9 +45,15 @@ def detect_time_fmt(date_value,**kwargs):
     weekday = 'Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday'
     wkday = 'Mon|Tue|Wed|Thu|Fri|Sat|Sun'
     ####
+    #Wed, 09 Feb 1994 22:23:32 GMT       -- HTTP format
     rfc1123 = ''.join(("(",wkday,")",", ","[0-9]{2} ","(",month,")"," [0-9]{4} ","[0-9]{2}:[0-9]{2}:[0-9]{2} ","GMT"))
     rfc1123 = "^" + rfc1123 + "$"
     regex_rfc1123 = re.compile(rfc1123)
+    ####
+    # 09 Feb 1994 22:23:32 GMT            -- HTTP format (no weekday)
+    rfc1123_nowkday = ''.join(("[0-9]{2} ","(",month,")"," [0-9]{4} ","[0-9]{2}:[0-9]{2}:[0-9]{2} ","GMT"))
+    rfc1123_nowkday = "^" + rfc1123_nowkday + "$"
+    regex_rfc1123_nowkday = re.compile(rfc1123_nowkday)
     ####
     rfc1123_tzoffset = ''.join(("(",wkday,")",", ","[0-9]{2} ","(",month,")"," [0-9]{4} ","[0-9]{2}:[0-9]{2}:[0-9]{2} ","[\+\-][0-9]{4}"))
     rfc1123_tzoffset = "^" + rfc1123_tzoffset + "$"
@@ -48,22 +64,41 @@ def detect_time_fmt(date_value,**kwargs):
     regex_rfc1123_notz = re.compile(rfc1123_notz)
     ####
     rfc1123_hypen = ''.join(("(",wkday,")",", ","[0-9]{2}-","(",month,")","-[0-9]{4} ","[0-9]{2}:[0-9]{2}:[0-9]{2} ","GMT"))
-    regex_rfc1123_hypen = "^" + rfc1123_hypen + "$"
+    rfc1123_hypen = "^" + rfc1123_hypen + "$"
     regex_rfc1123_hypen = re.compile(rfc1123_hypen)
+    ####
+    #Tuesday, 08-Feb-94 14:15:29 GMT     -- old rfc850 HTTP format
     rfc850 = ''.join(("(",weekday,")",", ","[0-9]{2}-","(",month,")","-[0-9]{2} ","[0-9]{2}:[0-9]{2}:[0-9]{2} ","GMT"))
-    regex_rfc850 = "^" + rfc850 + "$"
+    rfc850 = "^" + rfc850 + "$"
     regex_rfc850 = re.compile(rfc850)
+    ####
+    #Tuesday, 08-Feb-1994 14:15:29 GMT   -- broken rfc850 HTTP format
+    rfc850_broken = ''.join(("(",weekday,")",", ","[0-9]{2}-","(",month,")","-[0-9]{4} ","[0-9]{2}:[0-9]{2}:[0-9]{2} ","GMT"))
+    rfc850_broken = "^" + rfc850_broken + "$"
+    regex_rfc850_broken = re.compile(rfc850_broken)
+    ####
     rfc850_a = ''.join(("(",wkday,")",", ","[0-9]{2}-","(",month,")","-[0-9]{2} ","[0-9]{2}:[0-9]{2}:[0-9]{2} ","GMT"))
-    regex_rfc850_a = "^" + rfc850_a + "$"
+    rfc850_a = "^" + rfc850_a + "$"
     regex_rfc850_a = re.compile(rfc850_a)
+    ####
+    #08-Feb-94 14:15:29 GMT              -- rfc850 format (no weekday)
+    rfc850_nowkday = ''.join(("[0-9]{2}-","(",month,")","-[0-9]{2} ","[0-9]{2}:[0-9]{2}:[0-9]{2} ","GMT"))
+    rfc850_nowkday = "^" + rfc850_nowkday + "$"
+    regex_rfc850_nowkday = re.compile(rfc850_nowkday)
+    ####
     asctime = ''.join(("(",wkday,")"," ","(",month,")","(( [0-9]{2})|(  [0-9]{1}))"," ","[0-9]{2}:[0-9]{2}:[0-9]{2} ","[0-9]{4}"))
-    regex_asctime = "^" + asctime + "$"
+    asctime = "^" + asctime + "$"
     regex_asctime = re.compile(asctime)
+    ####
+    
+    ####
     if(mode == 'strict'):
         if(araq._real_dollar(date_value,regex_rfc1123)):
             return('rfc1123')
         elif(araq._real_dollar(date_value,regex_rfc1123_notz)):
             return('rfc1123_notz')
+        elif(araq._real_dollar(date_value,regex_rfc1123_nowkday)):
+            return('rfc1123_nowkday')
         elif(araq._real_dollar(date_value,regex_rfc1123_tzoffset)):
             return('rfc1123_tzoffset')
         elif(araq._real_dollar(date_value,regex_rfc1123_hypen)):
@@ -72,6 +107,10 @@ def detect_time_fmt(date_value,**kwargs):
             return('rfc850')
         elif(araq._real_dollar(date_value,regex_rfc850_a)):
             return('rfc850_a')
+        elif(araq._real_dollar(date_value,regex_rfc850_broken)):
+            return('rfc850_broken')
+        elif(araq._real_dollar(date_value,regex_rfc850_nowkday)):
+            return('rfc850_nowkday')
         elif(araq._real_dollar(date_value,regex_asctime)):
             return('asctime')
         else:
@@ -83,12 +122,18 @@ def detect_time_fmt(date_value,**kwargs):
             return('rfc1123_tzoffset')
         elif(regex_rfc1123_notz.search(date_value)):
             return('rfc1123_notz')
+        elif(regex_rfc1123_nowkday.search(date_value)):
+            return('rfc1123_nowkday')
         elif(regex_rfc1123_hypen.search(date_value)):
             return('rfc1123_hypen')
         elif(regex_rfc850.search(date_value)):
             return('rfc850')
         elif(regex_rfc850_a.search(date_value)):
             return('rfc850_a')
+        elif(regex_rfc850_broken.search(date_value)):
+            return('rfc850_broken')
+        elif(regex_rfc850_nowkday.search(date_value)):
+            return('rfc850_nowkday')
         elif(regex_asctime.search(date_value)):
             return('asctime')
         else:
@@ -96,21 +141,26 @@ def detect_time_fmt(date_value,**kwargs):
 
         
 
-
 TIMEFMT = {
     'rfc1123':'%a, %d %b %Y %H:%M:%S GMT',
+    'rfc1123_nowkday':'%d %b %Y %H:%M:%S GMT',
     'rfc1123_notz':'%a, %d %b %Y %H:%M:%S',
     'rfc1123_tzoffset':'%a, %d %b %Y %H:%M:%S %z',
     'rfc1123_hypen':'%a, %d-%b-%Y %H:%M:%S GMT',
     'rfc850':'%A, %d-%b-%y %H:%M:%S GMT',
+    'rfc850_nowkday':'%d-%b-%y %H:%M:%S GMT',
     'rfc850_a':'%a, %d-%b-%y %H:%M:%S GMT',
+    'rfc850_broken':'%A, %d-%b-%Y %H:%M:%S GMT',
     'asctime':'%a, %b %d %H:%M:%S %Y',
     '%a, %d %b %Y %H:%M:%S GMT':'rfc1123',
+    '%d %b %Y %H:%M:%S GMT':'rfc1123_nowkday',
     '%a, %d %b %Y %H:%M:%S':'rfc1123_notz',
     '%a, %d %b %Y %H:%M:%S %z':'rfc1123_tzoffset',
     '%a, %d-%b-%Y %H:%M:%S GMT':'rfc1123_hypen',
     '%A, %d-%b-%y %H:%M:%S GMT':'rfc850',
+    '%d-%b-%y %H:%M:%S GMT':'rfc850_nowkday',
     '%a, %d-%b-%y %H:%M:%S GMT':'rfc850_a',
+    '%A, %d-%b-%Y %H:%M:%S GMT':'rfc850_broken',
     '%a, %b %d %H:%M:%S %Y':'asctime'
 }
 
