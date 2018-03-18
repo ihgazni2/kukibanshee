@@ -546,6 +546,11 @@ class Cookie():
         saveCookie(jar,dir)
 
 
+# 当组成一个用于request 的ckheader 时，来源有三个
+# 1. 多个 set-cookie-header  in response 
+# 2. cookie-pair in javascript
+# 3. Jar
+##   
 
 
 #step 1.path = rslt.path loads cookie from jar ,and remove expiry-time ,
