@@ -1,5 +1,3 @@
-import sys
-#import sqlite
 import os
 import time
 import json
@@ -28,11 +26,6 @@ INVALIDLOG = {
     'secure':'dst_url only for https'
 }
 
-INMEMJAR = []
-SESSIONJAR = []
-ANADBPATH = '/opt/PY/PY3/kukibashee/kukibanshee/Resources/anadb.json'
-JARDBPATH = '/opt/PY/PY3/kukibashee/kukibanshee/Resources/jardb.json'
-
 def new_cookie():
     Cookie = {
         'origin':None,
@@ -57,7 +50,7 @@ def new_cookie():
         '_req-type':'Cookie',
         '_resp-type':'Set-Cookie',
         '_reject':False,
-        '_reject_reason':None
+        '_reject_reason':None,
     }
     return(Cookie)
 
@@ -346,15 +339,12 @@ def setckdict2Cookie(setckdict,**kwargs):
         ck['unquote_plus'] = True
     return(ck)
 
-#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
 def read_file_content(**kwargs):
     fd = open(kwargs['fn'],kwargs['op'])
     rslt = fd.read()
     fd.close()
     return(rslt)
 
-#
 def write_to_file(**kwargs):
     fd = open(kwargs['fn'],kwargs['op'])
     fd.write(kwargs['content'])
@@ -415,6 +405,34 @@ def cond_secure(ck,scheme):
     return(cond)
 
 
+#ck        Cookie.ck     是一个dict
+#ckl       cookie-list   
+
+def sort_ckl(ckl,**kwargs):
+    '''
+        Cookies with longer paths are listed before cookies with shorter paths.
+        Among cookies that have equal-length path fields, cookies with earlier creation-times are 
+        listed before cookies with later creation-times
+    '''
+    def add_plen(ele):
+        if(ele['Path'] == None):
+            ele['plen'] = 0
+        else:
+            ele['plen'] = ele['Path'].__len__()
+    def del_plen(ele):
+        del ele['plen']
+    ckl = elel.array_map(ckl,add_plen)
+    ckl = elel.sortDictList(ckl,['plen','creation-time'])
+    ckl = elel.array_map(ckl,del_plen)
+    return(ckl)
+
+
+
+# @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+ANADBPATH = '/opt/PY/PY3/kukibashee/kukibanshee/Resources/anadb.json'
+JARDBPATH = '/opt/PY/PY3/kukibashee/kukibanshee/Resources/jardb.json'
+
 class Cookie():
     '''
     '''
@@ -433,19 +451,9 @@ class Cookie():
         else:
             pass
         setckdict = drone.split_setck(setck)['setckdict']
-        self.Cookie = setckdict2Cookie(setckdict,unquote=unquote,unquote_plus=unquote_plus,origin=origin)
+        self.ck = setckdict2Cookie(setckdict,unquote=unquote,unquote_plus=unquote_plus,origin=origin)
     def __repr__(self):
-        return(self.Cookie.__str__())
-    ####
-    def save2mem(self,**kwargs):
-        if(self.Cookie['_reject'] == True):
-            print("No store rejected")
-        elif(self.Cookie['expiry-time']<=time.time()):
-            print("No store expired")
-        else:
-            INMEMJAR = elel.cond_remove_all(INMEMJAR,cond_func=cond_expired)
-            INMEMJAR.append(self.Cookie)
-            #### add sort
+        return(self.ck.__str__())
     def ckpair(self,**kwargs):
         '''
             get valid ckpair for dst_url
@@ -454,43 +462,54 @@ class Cookie():
         rslt = urllib.parse.urlparse(dst_url)
         scheme = rslt.scheme
         netloc = rslt.netloc
-        cond1 = not(cond_expired(self.Cookie))
-        cond2 = cond_domain(self.Cookie,netloc)
-        cond3 = cond_path(self.Cookie,path)
-        cond4 = cond_secure(self.Cookie,scheme)
+        cond1 = not(cond_expired(self.ck))
+        cond2 = cond_domain(self.ck,netloc)
+        cond3 = cond_path(self.ck,path)
+        cond4 = cond_secure(self.ck,scheme)
         cond = (cond1 & cond2 & cond3 & cond4)
         if(cond):
-            if(self.Cookie['unquote']):
-                if(self.Cookie['unquote_plus']):
-                    name = urllib.parse.quote_plus(self.Cookie['name'])
-                    value = urllib.parse.quote_plus(self.Cookie['value'])
+            if(self.ck['unquote']):
+                if(self.ck['unquote_plus']):
+                    name = urllib.parse.quote_plus(self.ck['name'])
+                    value = urllib.parse.quote_plus(self.ck['value'])
                 else:
-                    name = urllib.parse.quote(self.Cookie['name'])
-                    value = urllib.parse.quote(self.Cookie['value'])
+                    name = urllib.parse.quote(self.ck['name'])
+                    value = urllib.parse.quote(self.ck['value'])
             else:
-                name = self.Cookie['name']
-                value = self.Cookie['value']
+                name = self.ck['name']
+                value = self.ck['value']
             ckpair = drone.nv2ckpair(name,value)
             return(ckpair)
         else:
             return(None)
-    ####
+    ###############################
+    def save2mem(self,**kwargs):
+        '''
+            保存到in-mem jar 中 ，in-mem jar 是一个由Cookie(ck) 构成的数组cookie-list 
+        '''
+        inmem_jar = kwargs['jar']
+        if(self.ck['_reject'] == True):
+            print("No store rejected")
+        elif(self.ck['expiry-time']<=time.time()):
+            print("No store expired")
+        else:
+            inmem_jar.cks = elel.cond_remove_all(inmem_jar.cks,cond_func=cond_expired)
+            inmem_jar.cks.append(self.ck)
+            inmem_jar.cks = sort_ckl(ckl)
     @classmethod
-    def saveCookie(cls,Cookie,dir):
+    def save_ck(cls,Cookie,dir):
         '''
         '''
         if(os.path.exists(dir)):
             content = read_file_content(fn=dir,op='r+')
             arr = json.loads(content)
             arr.append(Cookie)
-            ### add sort
+            arr = sort_ckl(arr)
             write_to_file(fn=dir,content=json.dumps(arr),op='w+')
         else:
             arr = [Cookie]
             write_to_file(fn=dir,content=json.dumps(arr),op='w+')
     def save2file(self,**kwargs):
-        '''
-        '''
         if('mode' in kwargs):
             mode = kwargs['mode']
         else:
@@ -500,65 +519,104 @@ class Cookie():
                 dir = kwargs['dir']
             else:
                 dir = ANADBPATH
-            saveCookie(self.Cookie,dir)
+            save_ck(self.ck,dir)
         else:
             # for jar 
             if('dir' in kwargs):
                 dir = kwargs['dir']
             else:
                 dir = JARDBPATH
-            if(self.Cookie['_reject'] == True):
+            if(self.ck['_reject'] == True):
                 print("No save rejected Cookie to jar,only to ana")
             else:
-                saveCookie(self.Cookie,dir)
+                save_ck(self.ck,dir)
+
+
+class Jar():
+    '''
+        cks : Cookies 
+    '''
+    def __init__(self,**kwargs):
+        self.cks = []
+    def loads(self,dir):
+        if(os.path.exists(dir)):
+            content = read_file_content(fn=dir,op='r+')
+            arr = json.loads(content)
+            arr = elel.cond_remove_all(arr,cond_func=cond_expired)
+        else:
+            arr = []
+        self.cktl.extend(arr)
+    ####
+    def remove_expired(self):
+        '''
+            The user agent MUST evict all expired cookies from the cookie store if, 
+            at any time, an expired cookie exists in the cookie store
+        '''
+        self.cks = elel.cond_remove_all(self.cks,cond_func=cond_expired)
+        self.cks = sort_ckl(arr)
     ####
     @classmethod
-    def setcktl2ckstr(setcktl,**kwargs):
-        '''
-        '''
-        dst_url = kwargs['url']
-        ckpl = elel.array_map(setcktl,lambda setck:setck.ckpair(url=dst_url))
-        ckstr = drone.list2ckstr(ckpl)
-        return(ckstr)
-    ####
-    @classmethod
-    def loads(cls,dir):
+    def save_ckl(cls,ckl,dir):
         '''
         '''
         if(os.path.exists(dir)):
             content = read_file_content(fn=dir,op='r+')
             arr = json.loads(content)
-            arr = elel.cond_remove_all(jar,cond_func=cond_expired)
+            arr.extend(ckl)
+            arr = sort_ckl(arr)
+            write_to_file(fn=dir,content=json.dumps(arr),op='w+')
         else:
-            arr = []
-        return(arr)
+            arr = ckl
+            write_to_file(fn=dir,content=json.dumps(arr),op='w+')
+    ####
+    def save(self,**kwargs):
+        if('mode' in kwargs):
+            mode = kwargs['mode']
+        else:
+            mode = 'analysis'
+        if(mode == 'analysis'):
+            if('dir' in kwargs):
+                dir = kwargs['dir']
+            else:
+                dir = ANADBPATH
+            save_ckl(ckl,dir)
+        else:
+            if('dir' in kwargs):
+                dir = kwargs['dir']
+            else:
+                dir = JARDBPATH
+            if(self.ck['_reject'] == True):
+                print("No save rejected Cookie to jar,only to ana")
+            else:
+                save_ckl(ckl,dir)
+    ####
+    def ckpl(self,**kwargs):
+        dst_url = kwargs['url']
+        ckpl = elel.array_map(setcktl,lambda setck:Cookie(setck).ckpair(url=dst_url))
+        return(ckpl)
+    def ckstr(self,**kwargs):
+        dst_url = kwargs['url']
+        ckpl = elel.array_map(setcktl,lambda setck:Cookie(setck).ckpair(url=dst_url))
+        ckstr = drone.list2ckstr(ckpl)
+        return(ckstr)
     @classmethod
-    def remove_expired_jar(jar,dir):
+    def setcktl2ckstr(cls,setcktl,**kwargs):
         '''
-            The user agent MUST evict all expired cookies from the cookie store if, 
-            at any time, an expired cookie exists in the cookie store
         '''
-        if('dir' in kwargs):
-            dir = kwargs['dir']
-        else:
-            dir = JARDBPATH
-        jar = elel.cond_remove_all(jar,cond_func=cond_expired)
-        saveCookie(jar,dir)
+        dst_url = kwargs['url']
+        ckpl = elel.array_map(setcktl,lambda setck:Cookie(setck).ckpair(url=dst_url))
+        ckstr = drone.list2ckstr(ckpl)
+        return(ckstr)
 
 
+####################################################################
 # 当组成一个用于request 的ckheader 时，来源有三个
-# 1. 多个 set-cookie-header  in response 
+# 1. 多个 set-cookie-header  in response : setcktl2ckstr  Jar.ckstr
 # 2. cookie-pair in javascript
-# 3. Jar
-##   
+# 3. Jar : Jar.loads 
+#####################################################################    
 
 
-#step 1.path = rslt.path loads cookie from jar ,and remove expiry-time ,
-#1. 把cookie-jar load, 删除过期的cookie,更新cookie-jar
-#JAR = loads_jar(JARDBPATH)
-#set-cookie -> Cookie 
-#pipeline 
-#cookie from javascript
-#cookie from set-cookie : set-cookie-header  -> Cookie 
-#cookie 
+
+
 
