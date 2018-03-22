@@ -2039,7 +2039,23 @@ def classify_setcktl(setcktl,**kwargs):
     return(rslt)
 
 
-
+def setcktl2ckstr(setcktl):
+    '''
+        this function only do string-level work ,
+        will not do domain/path/expiry/secure/httponly/ management
+        for real /domain/path/expiry/secure/httponly/ management,
+        refer to jar.py->class Jar->.setcktl2ckstr
+        
+        setcktl = [('Set-Cookie', 'BIGipServer=rd1; path=/'), ('Set-Cookie', 'TS=002; Path=/')]
+        setcktl2ckstr(setcktl)
+    '''
+    def cond_func(ele):
+        ckpair = nv2ckpair(ele['name'],ele['value'])
+        return(ckpair)
+    setckdl = setcktl2dl(setcktl)
+    ckpl = elel.array_map(setckdl,cond_func)
+    ckstr = pl2ckstr(ckpl)
+    return(ckstr)
 
 
 
