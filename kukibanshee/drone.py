@@ -1485,7 +1485,7 @@ def prepend(horb,src,**kwargs):
         prepended = prepend(ckheader,src)
         prepended
     '''
-    ckstrcond = is_ckheader(horb)
+    cond = is_ckheader(horb)
     if(cond):
         return(prepend_ckheader(horb,src,**kwargs))
     else:
