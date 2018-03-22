@@ -193,7 +193,9 @@ for detailed usage and functions please refer to:
 ├──31. [unquote_setck](kukibanshee/Images/unquote_setck.0.png)  <br>
 ├──32. [classify_setckdl](kukibanshee/Images/classify_setckdl.0.png)  <br>
 ├──33. [classify_setcktl](kukibanshee/Images/classify_setcktl.0.png)  <br>
+├──34. [setcktl2ckstr](kukibanshee/Images/setcktl2ckstr.0.png)  <br>
 
 
 ----------------------------------------------------------------------------------
+
 
