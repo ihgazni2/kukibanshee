@@ -435,6 +435,9 @@ JARDBPATH = '/opt/PY/PY3/kukibashee/kukibanshee/Resources/jardb.json'
 
 class Cookie():
     '''
+        wait-for-implement:
+             Update the last-access-time of each cookie in the cookie-list to 
+             the current date and time
     '''
     def __init__(self,setck,**kwargs):
         origin = kwargs['origin']
