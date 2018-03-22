@@ -508,35 +508,35 @@ class Cookie():
             inmem_jar.cks.append(self.ck)
             inmem_jar.cks = sort_ckl(ckl)
     @classmethod
-    def save_ck(cls,Cookie,dir):
+    def save_ck(cls,Cookie,myDir):
         '''
         '''
-        if(os.path.exists(dir)):
-            content = read_file_content(fn=dir,op='r+')
+        if(os.path.exists(myDir)):
+            content = read_file_content(fn=myDir,op='r+')
             arr = json.loads(content)
             arr.append(Cookie)
             arr = sort_ckl(arr)
-            write_to_file(fn=dir,content=json.dumps(arr),op='w+')
+            write_to_file(fn=myDir,content=json.dumps(arr),op='w+')
         else:
             arr = [Cookie]
-            write_to_file(fn=dir,content=json.dumps(arr),op='w+')
+            write_to_file(fn=myDir,content=json.dumps(arr),op='w+')
     def save2file(self,**kwargs):
         if('mode' in kwargs):
             mode = kwargs['mode']
         else:
             mode = 'analysis'
         if(mode == 'analysis'):
-            if('dir' in kwargs):
-                dir = kwargs['dir']
+            if('myDir' in kwargs):
+                myDir = kwargs['myDir']
             else:
-                dir = ANADBPATH
-            save_ck(self.ck,dir)
+                myDir = ANADBPATH
+            save_ck(self.ck,myDir)
         else:
             # for jar 
-            if('dir' in kwargs):
-                dir = kwargs['dir']
+            if('myDir' in kwargs):
+                myDir = kwargs['myDir']
             else:
-                dir = JARDBPATH
+                myDir = JARDBPATH
             if(self.ck['_reject'] == True):
                 print("No save rejected Cookie to jar,only to ana")
             elif(self.ck['persistant-flag'] == False):
@@ -545,7 +545,7 @@ class Cookie():
                 cond = (self.ck['expiry-time']<=time.time())
                 print("No store expired persistant ")
             else:
-                save_ck(self.ck,dir)
+                save_ck(self.ck,myDir)
 
 
 class Jar():
@@ -554,9 +554,9 @@ class Jar():
     '''
     def __init__(self,**kwargs):
         self.cks = []
-    def loads(self,dir):
-        if(os.path.exists(dir)):
-            content = read_file_content(fn=dir,op='r+')
+    def loads(self,myDir):
+        if(os.path.exists(myDir)):
+            content = read_file_content(fn=myDir,op='r+')
             arr = json.loads(content)
             arr = elel.cond_select_all(arr,cond_func=cond_persistant)
             arr = elel.cond_remove_all(arr,cond_func=cond_expired)
@@ -579,22 +579,22 @@ class Jar():
         self.cks = sort_ckl(arr)
     ####
     @classmethod
-    def save_ckl(cls,ckl,dir):
+    def save_ckl(cls,ckl,myDir):
         '''
         '''
-        if(os.path.exists(dir)):
-            content = read_file_content(fn=dir,op='r+')
+        if(os.path.exists(myDir)):
+            content = read_file_content(fn=myDir,op='r+')
             arr = json.loads(content)
             arr.extend(ckl)
             arr = elel.cond_select_all(arr,cond_func=cond_persistant)
             arr = elel.cond_remove_all(arr,cond_func=cond_expired)
             arr = sort_ckl(arr)
-            write_to_file(fn=dir,content=json.dumps(arr),op='w+')
+            write_to_file(fn=myDir,content=json.dumps(arr),op='w+')
         else:
             arr = ckl
             arr = elel.cond_select_all(arr,cond_func=cond_persistant)
             arr = elel.cond_remove_all(arr,cond_func=cond_expired)
-            write_to_file(fn=dir,content=json.dumps(arr),op='w+')
+            write_to_file(fn=myDir,content=json.dumps(arr),op='w+')
     ####
     def save(self,**kwargs):
         if('mode' in kwargs):
@@ -602,17 +602,17 @@ class Jar():
         else:
             mode = 'analysis'
         if(mode == 'analysis'):
-            if('dir' in kwargs):
-                dir = kwargs['dir']
+            if('myDir' in kwargs):
+                myDir = kwargs['myDir']
             else:
-                dir = ANADBPATH
-            save_ckl(ckl,dir)
+                myDir = ANADBPATH
+            save_ckl(ckl,myDir)
         else:
-            if('dir' in kwargs):
-                dir = kwargs['dir']
+            if('myDir' in kwargs):
+                myDir = kwargs['myDir']
             else:
-                dir = JARDBPATH
-            save_ckl(ckl,dir)
+                myDir = JARDBPATH
+            save_ckl(ckl,myDir)
     ####
     def ckpl(self,**kwargs):
         dst_url = kwargs['url']
