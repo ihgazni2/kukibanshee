@@ -350,9 +350,16 @@ def write_to_file(**kwargs):
     fd.write(kwargs['content'])
     fd.close()
 
+def cond_persistant(ck):
+    '''
+    '''
+    persistant = ck['persistant-flag']
+    return(persistant)
+
 def cond_expired(ck):
     '''
     '''
+    ####
     expiry = ck['expiry-time']
     now = time.time()
     cond = (now >= expiry)
@@ -493,8 +500,9 @@ class Cookie():
         inmem_jar = kwargs['jar']
         if(self.ck['_reject'] == True):
             print("No store rejected")
-        elif(self.ck['expiry-time']<=time.time()):
-            print("No store expired")
+        elif(self.ck['persistant-flag'] == True):
+            cond = (self.ck['expiry-time']<=time.time())
+            print("No store expired persistant ")
         else:
             inmem_jar.cks = elel.cond_remove_all(inmem_jar.cks,cond_func=cond_expired)
             inmem_jar.cks.append(self.ck)
@@ -531,6 +539,11 @@ class Cookie():
                 dir = JARDBPATH
             if(self.ck['_reject'] == True):
                 print("No save rejected Cookie to jar,only to ana")
+            elif(self.ck['persistant-flag'] == False):
+                print("No store non-persistant into jar file")
+            elif(self.ck['persistant-flag'] == True):
+                cond = (self.ck['expiry-time']<=time.time())
+                print("No store expired persistant ")
             else:
                 save_ck(self.ck,dir)
 
@@ -545,11 +558,18 @@ class Jar():
         if(os.path.exists(dir)):
             content = read_file_content(fn=dir,op='r+')
             arr = json.loads(content)
+            arr = elel.cond_select_all(arr,cond_func=cond_persistant)
             arr = elel.cond_remove_all(arr,cond_func=cond_expired)
         else:
             arr = []
         self.cktl.extend(arr)
     ####
+    def remove_non_persistant(self):
+        '''
+            should only save persistant-flag setted Cookie into jar
+        '''
+        self.cks = elel.cond_select_all(self.cks,cond_func=cond_persistant)
+        self.cks = sort_ckl(arr)
     def remove_expired(self):
         '''
             The user agent MUST evict all expired cookies from the cookie store if, 
@@ -566,10 +586,14 @@ class Jar():
             content = read_file_content(fn=dir,op='r+')
             arr = json.loads(content)
             arr.extend(ckl)
+            arr = elel.cond_select_all(arr,cond_func=cond_persistant)
+            arr = elel.cond_remove_all(arr,cond_func=cond_expired)
             arr = sort_ckl(arr)
             write_to_file(fn=dir,content=json.dumps(arr),op='w+')
         else:
             arr = ckl
+            arr = elel.cond_select_all(arr,cond_func=cond_persistant)
+            arr = elel.cond_remove_all(arr,cond_func=cond_expired)
             write_to_file(fn=dir,content=json.dumps(arr),op='w+')
     ####
     def save(self,**kwargs):
@@ -588,10 +612,7 @@ class Jar():
                 dir = kwargs['dir']
             else:
                 dir = JARDBPATH
-            if(self.ck['_reject'] == True):
-                print("No save rejected Cookie to jar,only to ana")
-            else:
-                save_ckl(ckl,dir)
+            save_ckl(ckl,dir)
     ####
     def ckpl(self,**kwargs):
         dst_url = kwargs['url']

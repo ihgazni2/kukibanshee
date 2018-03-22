@@ -1991,6 +1991,46 @@ def validate_setckheader(setckheader,**kwargs):
     cond = (cond1 & cond2)
     return(cond)
     
+##
+def classify_setckdl(setckdl,**kwargs):
+    '''
+        setckdl = [{'value': 'rd1', 'Path': '/', 'name': 'BIGipServer'}, {'value': '0105', 'HttpOnly': True, 'Path': '/', 'name': 'TS', 'Secure': True}]
+        pobj(setckdl)
+        classified = classify_setckdl(setckdl,via='secure')
+        pobj(classified['yes'])
+        pobj(classified['no'])
+    '''
+    via = str.lower(kwargs['via'])
+    def cond_func(ele,via):
+        via = uniform_ckavattr(via)
+        cond1 = (via in ele)
+        if(cond1):
+            cond = (ele[via] == True)
+        else:
+            cond = False
+        return(cond)
+    rslt = {}
+    rslt['yes'] = []
+    rslt['no'] = []
+    length = setckdl.__len__()
+    for i in range(0,length):
+        ele = setckdl[i]
+        cond = cond_func(ele,via)
+        if(cond):
+            rslt['yes'].append(ele)
+        else:
+            rslt['no'].append(ele)
+    return(rslt)
+
+
+
+
+
+
+
+
+
+
 
 #ckavattr            ['expires','max-age','domain','path','secure','httponly']
 #expav             expires-av 
