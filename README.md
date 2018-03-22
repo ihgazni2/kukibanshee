@@ -135,13 +135,13 @@ for detailed usage and functions please refer to:
 
 ## wrapped API: apply to either ckbody or ckheader
 -----------------------------------------------------------
->├──0. [select](kukibanshee/Images/ckheader.0.png)  <br>
-├──1. [prepend](kukibanshee/Images/ckheader.0.png)  <br>
-├──2. [append](kukibanshee/Images/ckheader.0.png)  <br>
+>├──0. [select](kukibanshee/Images/select.0.png)  <br>
+├──1. [prepend](kukibanshee/Images/prepend.0.png)  <br>
+├──2. [append](kukibanshee/Images/append.0.png)  <br>
 ├──3. [insert](kukibanshee/Images/insert.0.png)  <br>
-├──4. [remove](kukibanshee/Images/ckheader.0.png)  <br>
-├──5. [replace](kukibanshee/Images/ckheader.0.png)  <br>
-├──6. [uniqualize](kukibanshee/Images/ckheader.0.png)  <br>
+├──4. [remove](kukibanshee/Images/remove.0.png)  <br>
+├──5. [replace](kukibanshee/Images/replace.0.png)  <br>
+├──6. [uniqualize](kukibanshee/Images/uniqualize.0.png)  <br>
 
 ------------------------------------------------------------
 
