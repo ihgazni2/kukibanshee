@@ -1801,7 +1801,7 @@ def setcktl2sl(setcktl):
         setcksl = setcktl2sl(setcktl)
         pobj(setcksl)
     '''
-    setcksl = array_map(setcktl,setcktuple2str)
+    setcksl = elel.array_map(setcktl,setcktuple2str)
     return(setcksl)
 
 def str2setcktuple(setckstr):
@@ -2023,7 +2023,20 @@ def classify_setckdl(setckdl,**kwargs):
     return(rslt)
 
 
-
+def classify_setcktl(setcktl,**kwargs):
+    '''
+        setcktl = [('Set-Cookie', 'BIGipServer=rd1; path=/'), ('Set-Cookie', 'TS=0105; Path=/; Secure; HTTPOnly')]
+        #pobj(setcktl)
+        classified = classify_setcktl(setcktl,via='secure')
+        pobj(classified['yes'])
+        pobj(classified['no'])
+    '''
+    via = str.lower(kwargs['via'])
+    setckdl = setcktl2dl(setcktl)
+    rslt = classify_setckdl(setckdl,via=via)
+    rslt['yes'] = dl2setcktl(rslt['yes'])
+    rslt['no'] = dl2setcktl(rslt['no'])
+    return(rslt)
 
 
 
