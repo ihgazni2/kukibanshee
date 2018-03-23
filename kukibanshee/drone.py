@@ -1565,6 +1565,21 @@ def replace(horb,ckname,ckele,*args,**kwargs):
     else:
         return(replace_ckbody(horb,ckname,ckele,*args,**kwargs))
 
+def replace_same(horb,ckele,*args,**kwargs):
+    '''
+        ckstr = 'BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; TS013d8ed5=0105b6b0; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+        replaced = replace_same(ckstr,'TS013d8ed5=replace')
+        replaced
+        ####
+        ckheader = 'Cookie: BIGipServer=rd19; TS013d8ed5=0105b6b0; TSPD_101=08819c2a; TS013d8ed5=0105b6b0; __RequestVerificationToken=9VdrIliI; ASP.NET_SessionId=epax'
+        replaced = replace_same(ckheader,'TS013d8ed5=replace')
+        replaced
+        
+    '''
+    ckname,ckvalue = ckele2pt(ckele)
+    return(replace(horb,ckname,ckele,*args,**kwargs))
+
+
 
 def uniqualize(horb,*cknames,**kwargs):
     '''
