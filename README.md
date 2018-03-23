@@ -141,6 +141,7 @@ for detailed usage and functions please refer to:
 ├──3. [insert](kukibanshee/Images/insert.0.png)  <br>
 ├──4. [remove](kukibanshee/Images/remove.0.png)  <br>
 ├──5. [replace](kukibanshee/Images/replace.0.png)  <br>
+├──5. [replace_same](kukibanshee/Images/replace_same.0.png)  <br>
 ├──6. [uniqualize](kukibanshee/Images/uniqualize.0.png)  <br>
 
 ------------------------------------------------------------
