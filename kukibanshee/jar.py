@@ -643,4 +643,118 @@ class Jar():
 
 
 
+5.3. Storage Model
+ # The user agent stores the following fields about each cookie: name,
+ # value, expiry-time, domain, path, creation-time, last-access-time,
+ # persistent-flag, host-only-flag, secure-only-flag, and http-only
+# flag.
+ # When the user agent "receives a cookie" from a request-uri with name
+ # cookie-name, value cookie-value, and attributes cookie-attribute
+# list, the user agent MUST process the cookie as follows:
+ # 1. A user agent MAY ignore a received cookie in its entirety. For
+ # example, the user agent might wish to block receiving cookies
+ # from "third-party" responses or the user agent might not wish to
+ # store cookies that exceed some size.
+# 2. Create a new cookie with name cookie-name, value cookie-value.
+ # Set the creation-time and the last-access-time to the current
+ # date and time.
+ # 3. If the cookie-attribute-list contains an attribute with an
+ # attribute-name of "Max-Age":
+ # Set the cookie’s persistent-flag to true.
+ # Set the cookie’s expiry-time to attribute-value of the last
+ # attribute in the cookie-attribute-list with an attribute-name
+ # of "Max-Age".
+ # Otherwise, if the cookie-attribute-list contains an attribute
+ # with an attribute-name of "Expires" (and does not contain an
+ # attribute with an attribute-name of "Max-Age"):
+ # Set the cookie’s persistent-flag to true.
+ # Set the cookie’s expiry-time to attribute-value of the last
+ # attribute in the cookie-attribute-list with an attribute-name
+ # of "Expires".
+ # Otherwise:
+ # Set the cookie’s persistent-flag to false.
+ # Set the cookie’s expiry-time to the latest representable
+ # date.
+ # 4. If the cookie-attribute-list contains an attribute with an
+ # attribute-name of "Domain":
+ # Let the domain-attribute be the attribute-value of the last
+ # attribute in the cookie-attribute-list with an attribute-name
+ # of "Domain".
+ # Otherwise:
+ # Let the domain-attribute be the empty string.
+ # 5. If the user agent is configured to reject "public suffixes" and
+ # the domain-attribute is a public suffix:
+ # If the domain-attribute is identical to the canonicalized
+ # request-host:
+ # Let the domain-attribute be the empty string.
+ # Otherwise:
+ # Ignore the cookie entirely and abort these steps.
+ # NOTE: A "public suffix" is a domain that is controlled by a
+ # public registry, such as "com", "co.uk", and "pvt.k12.wy.us".
+ # This step is essential for preventing attacker.com from
+ # disrupting the integrity of example.com by setting a cookie
+ # with a Domain attribute of "com". Unfortunately, the set of
+ # public suffixes (also known as "registry controlled domains")
+ # changes over time. If feasible, user agents SHOULD use an
+ # up-to-date public suffix list, such as the one maintained by
+ # the Mozilla project at <http://publicsuffix.org/>.
+ # 6. If the domain-attribute is non-empty:
+ # If the canonicalized request-host does not domain-match the
+ # domain-attribute:
+ # Ignore the cookie entirely and abort these steps.
+ # Otherwise:
+ # Set the cookie’s host-only-flag to false.
+ # Set the cookie’s domain to the domain-attribute.
+ # Otherwise:
+ # Set the cookie’s host-only-flag to true.
+ # Set the cookie’s domain to the canonicalized request-host.
+ # 7. If the cookie-attribute-list contains an attribute with an
+ # attribute-name of "Path", set the cookie’s path to attribute
+# value of the last attribute in the cookie-attribute-list with an
+ # attribute-name of "Path". Otherwise, set the cookie’s path to
+ # the default-path of the request-uri.
+ # 8. If the cookie-attribute-list contains an attribute with an
+ # attribute-name of "Secure", set the cookie’s secure-only-flag to
+ # true. Otherwise, set the cookie’s secure-only-flag to false.
+ # 9. If the cookie-attribute-list contains an attribute with an
+ # attribute-name of "HttpOnly", set the cookie’s http-only-flag to
+ # true. Otherwise, set the cookie’s http-only-flag to false.
+# 10. If the cookie was received from a "non-HTTP" API and the
+ # cookie’s http-only-flag is set, abort these steps and ignore the
+ # cookie entirely.
+ # 11. If the cookie store contains a cookie with the same name,
+ # domain, and path as the newly created cookie:
+ # 1. Let old-cookie be the existing cookie with the same name,
+ # domain, and path as the newly created cookie. (Notice that
+ # this algorithm maintains the invariant that there is at most
+ # one such cookie.)
+ # 2. If the newly created cookie was received from a "non-HTTP"
+ # API and the old-cookie’s http-only-flag is set, abort these
+ # steps and ignore the newly created cookie entirely.
+ # 3. Update the creation-time of the newly created cookie to
+ # match the creation-time of the old-cookie.
+ # 4. Remove the old-cookie from the cookie store.
+ # 12. Insert the newly created cookie into the cookie store.
+ # A cookie is "expired" if the cookie has an expiry date in the past.
+ # The user agent MUST evict all expired cookies from the cookie store
+ # if, at any time, an expired cookie exists in the cookie store.
+ # At any time, the user agent MAY "remove excess cookies" from the
+ # cookie store if the number of cookies sharing a domain field exceeds
+ # some implementation-defined upper bound (such as 50 cookies).
+ # At any time, the user agent MAY "remove excess cookies" from the
+ # cookie store if the cookie store exceeds some predetermined upper
+ # bound (such as 3000 cookies).
+ # When the user agent removes excess cookies from the cookie store, the
+ # user agent MUST evict cookies in the following priority order:
+ # 1. Expired cookies.
+ # 2. Cookies that share a domain field with more than a predetermined
+ # number of other cookies.
+ # 3. All cookies.
+ # If two cookies have the same removal priority, the user agent MUST
+ # evict the cookie with the earliest last-access date first.
+ # When "the current session is over" (as defined by the user agent),
+ # the user agent MUST remove from the cookie store all cookies with the
+ # persistent-flag set to false.
 
+
+ 

@@ -6,8 +6,6 @@ from kukibanshee import araq
 #LOCAL_ZONE = get_localzone()
 #int(LOCAL_ZONE.dst(datetime.datetime.utcfromtimestamp(t//1000)).seconds)*1000
 
-#    08-Feb-1994 14:15:29 GMT            -- broken rfc850 format (no weekday) 
-
 
 #    1994-02-03 14:15:29 -0100    -- ISO 8601 format 
 #    1994-02-03 14:15:29          -- zone is optional 
@@ -77,6 +75,11 @@ def detect_time_fmt(date_value,**kwargs):
     rfc850_broken = "^" + rfc850_broken + "$"
     regex_rfc850_broken = re.compile(rfc850_broken)
     ####
+    #08-Feb-1994 14:15:29 GMT   -- broken rfc850 HTTP no weekday
+    rfc850_broken_nowkday = ''.join(("[0-9]{2}-","(",month,")","-[0-9]{4} ","[0-9]{2}:[0-9]{2}:[0-9]{2} ","GMT"))
+    rfc850_broken_nowkday = "^" + rfc850_broken_nowkday + "$"
+    regex_rfc850_broken_nowkday = re.compile(rfc850_broken_nowkday)
+    ####
     rfc850_a = ''.join(("(",wkday,")",", ","[0-9]{2}-","(",month,")","-[0-9]{2} ","[0-9]{2}:[0-9]{2}:[0-9]{2} ","GMT"))
     rfc850_a = "^" + rfc850_a + "$"
     regex_rfc850_a = re.compile(rfc850_a)
@@ -90,7 +93,10 @@ def detect_time_fmt(date_value,**kwargs):
     asctime = "^" + asctime + "$"
     regex_asctime = re.compile(asctime)
     ####
-    
+    #1994-02-03 14:15:29 -0100    -- ISO 8601 format
+    iso8601 = ''.join(("[0-9]{4}","\-", "[0-9]{2}","\-","[0-9]{2} ","[0-9]{2}:[0-9]{2}:[0-9]{2} ","[\+\-][0-9]{4}"))
+    iso8601 = "^" + iso8601 + "$"
+    regex_iso8601 = re.compile(iso8601)
     ####
     if(mode == 'strict'):
         if(araq._real_dollar(date_value,regex_rfc1123)):
@@ -109,9 +115,13 @@ def detect_time_fmt(date_value,**kwargs):
             return('rfc850_a')
         elif(araq._real_dollar(date_value,regex_rfc850_broken)):
             return('rfc850_broken')
+        elif(araq._real_dollar(date_value,regex_rfc850_broken_nowkday)):
+            return('rfc850_broken_nowkday')
         elif(araq._real_dollar(date_value,regex_rfc850_nowkday)):
             return('rfc850_nowkday')
         elif(araq._real_dollar(date_value,regex_asctime)):
+            return('asctime')
+        elif(araq._real_dollar(date_value,regex_iso8601)):
             return('asctime')
         else:
             return(None)
@@ -132,9 +142,13 @@ def detect_time_fmt(date_value,**kwargs):
             return('rfc850_a')
         elif(regex_rfc850_broken.search(date_value)):
             return('rfc850_broken')
+        elif(regex_rfc850_broken_nowkday.search(date_value)):
+            return('rfc850_broken_nowkday')
         elif(regex_rfc850_nowkday.search(date_value)):
             return('rfc850_nowkday')
         elif(regex_asctime.search(date_value)):
+            return('asctime')
+        elif(regex_iso8601.search(date_value)):
             return('asctime')
         else:
             return(None)
@@ -151,7 +165,9 @@ TIMEFMT = {
     'rfc850_nowkday':'%d-%b-%y %H:%M:%S GMT',
     'rfc850_a':'%a, %d-%b-%y %H:%M:%S GMT',
     'rfc850_broken':'%A, %d-%b-%Y %H:%M:%S GMT',
+    'rfc850_broken_nowkday':'%d-%b-%Y %H:%M:%S GMT',
     'asctime':'%a, %b %d %H:%M:%S %Y',
+    'iso8601':'%Y-%m-%d %H:%M:%S %z',
     '%a, %d %b %Y %H:%M:%S GMT':'rfc1123',
     '%d %b %Y %H:%M:%S GMT':'rfc1123_nowkday',
     '%a, %d %b %Y %H:%M:%S':'rfc1123_notz',
@@ -161,7 +177,9 @@ TIMEFMT = {
     '%d-%b-%y %H:%M:%S GMT':'rfc850_nowkday',
     '%a, %d-%b-%y %H:%M:%S GMT':'rfc850_a',
     '%A, %d-%b-%Y %H:%M:%S GMT':'rfc850_broken',
-    '%a, %b %d %H:%M:%S %Y':'asctime'
+    '%d-%b-%Y %H:%M:%S GMT':'rfc850_broken_nowkday',
+    '%a, %b %d %H:%M:%S %Y':'asctime',
+    '%Y-%m-%d %H:%M:%S %z':'iso8601'
 }
 
 
