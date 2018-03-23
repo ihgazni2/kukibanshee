@@ -643,7 +643,7 @@ class Jar():
 
 
 
-5.3. Storage Model
+#5.3. Storage Model
  # The user agent stores the following fields about each cookie: name,
  # value, expiry-time, domain, path, creation-time, last-access-time,
  # persistent-flag, host-only-flag, secure-only-flag, and http-only
