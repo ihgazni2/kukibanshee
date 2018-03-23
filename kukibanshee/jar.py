@@ -640,8 +640,15 @@ class Jar():
 # 3. Jar : Jar.loads 
 #####################################################################    
 
-
-
+############################################################
+#------------wait for implement hierachy jar------------------
+#jar
+#    ----domain1
+#            ----path11
+#    ----domain12
+#            ----path21
+#            ----path22
+##############################################################
 
 #5.3. Storage Model
  # The user agent stores the following fields about each cookie: name,
