@@ -149,8 +149,14 @@ def ckpair2tuple(ckpair):
         ckpair = "TS=0105b666"
         ckpt = ckpair2tuple(ckpair)
         ckpt
+        ckpair = "TS=rc=1&ef=2"
+        ckpt = ckpair2tuple(ckpair)
+        ckpt
     '''
-    ckpt = tuple(ckpair.split(SEPARATORS['ckpair']))
+    eq_loc = ckpair.index("=")
+    ckname = ckpair[:eq_loc]
+    ckvalue = ckpair[(eq_loc+1):]
+    ckpt = (ckname,ckvalue)
     return(ckpt)
 
 def tuple2ckpair(ckpt):
