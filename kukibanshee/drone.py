@@ -1810,6 +1810,7 @@ def setcktl2sl(setcktl):
     setcksl = elel.array_map(setcktl,setcktuple2str)
     return(setcksl)
 
+
 def str2setcktuple(setckstr):
     '''
         setckstr = '__Host-user_session=Tz98; path=/; expires=Tue, 27 Mar 2018 05:30:16 -0000; secure; HttpOnly; SameSite=Strict'
@@ -2064,6 +2065,20 @@ def setcktl2ckstr(setcktl):
     return(ckstr)
 
 
+def setcktl2ckpl(setcktl):
+    '''
+        this function only do string-level work ,
+        will not do domain/path/expiry/secure/httponly/ management
+        for real /domain/path/expiry/secure/httponly/ management,
+        refer to jar.py->class Jar->.setcktl2ckstr
+
+        setcktl = [('Set-Cookie', 'ASP.NET_SessionId=zz; path=/; HttpOnly'), ('Set-Cookie', 'TS=0105; Path=/; Secure; HTTPOnly')]
+        ckpl = setcktl2ckpl(setcktl) 
+        pobj(ckpl)
+    '''
+    ckstr = setcktl2ckstr(setcktl)
+    ckpl = ckstr2pl(ckstr)
+    return(ckpl)
 
 
 
