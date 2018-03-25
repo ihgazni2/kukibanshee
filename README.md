@@ -108,6 +108,7 @@ for detailed usage and functions please refer to:
 ├──47. [replace_ckbody](kukibanshee/Images/replace_ckbody.0.png)  <br>
 ├──48. [uniqualize_ckbody](kukibanshee/Images/uniqualize_ckbody.0.png)  <br>
 
+
 -----------------------------------------------------------------------
 
 ## cookie-header
@@ -143,6 +144,8 @@ for detailed usage and functions please refer to:
 ├──5. [replace](kukibanshee/Images/replace.0.png)  <br>
 ├──5. [replace_same](kukibanshee/Images/replace_same.0.png)  <br>
 ├──6. [uniqualize](kukibanshee/Images/uniqualize.0.png)  <br>
+├──7. [show](kukibanshee/Images/show.0.png)  <br>
+
 
 ------------------------------------------------------------
 
