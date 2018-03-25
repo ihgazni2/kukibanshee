@@ -1598,6 +1598,28 @@ def uniqualize(horb,*cknames,**kwargs):
         return(uniqualize_ckbody(horb,*cknames,**kwargs))
 
 
+#####this function need from xdict.jprint import pobj
+def show(horb):
+    '''
+        horb = "Cookie: TS=ts001; Data=History=001; Auth=ABCD001; rToken=EohV; BIGipServer=rd001; ASP.NET_SessionId=sesn001; TSPD=tspd001"
+        show(horb)
+    '''
+    try:
+        from xdict.jprint import pobj
+    except:
+        pobj = print
+    else:
+        pass
+    cond = is_ckheader(horb)
+    if(cond):
+        ckdict = split_ckheader(horb,mode='ckdict')
+    else:
+        #treated as ckbody
+        ckdict = convert_ckbody(ckbody,mode='ckdict')
+    pobj(ckdict)
+
+#####
+
 #Part.4 Set-Cookie
 # 客户端 只要实现 split_setckheader 即可
 # 因为每个set-cookie-header 只能包含一条cookie-pair,所以只要支持python返回的一种数据格式setcktuple即可
