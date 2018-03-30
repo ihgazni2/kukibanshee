@@ -1,1 +1,1 @@
-/usr/local/lib/python3.4/site-packages/kukibanshee-0.2.5-py3.4.egg
+/usr/local/lib/python3.4/site-packages/kukibanshee-0.2.6-py3.4.egg
