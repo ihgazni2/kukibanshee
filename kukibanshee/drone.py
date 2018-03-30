@@ -1615,7 +1615,7 @@ def show(horb):
         ckdict = split_ckheader(horb,mode='ckdict')
     else:
         #treated as ckbody
-        ckdict = convert_ckbody(ckbody,mode='ckdict')
+        ckdict = convert_ckbody(horb,mode='ckdict')
     pobj(ckdict)
 
 #####
