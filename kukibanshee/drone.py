@@ -1597,6 +1597,33 @@ def uniqualize(horb,*cknames,**kwargs):
     else:
         return(uniqualize_ckbody(horb,*cknames,**kwargs))
 
+#####
+
+def includes(horb,ckname,**kwargs):
+    cond = is_ckheader(horb)
+    if(cond):
+        ckstr = split_ckheader(horb,mode="ckstr")['ckstr'] 
+    else:
+        ckstr = horb
+    return(ckname in ckstr2dict(ckstr))
+
+
+def get(horb,ckname,**kwargs)
+    cond = is_ckheader(horb)
+    if(cond):
+        ckstr = split_ckheader(horb,mode="ckstr")['ckstr']
+    else:
+        ckstr = horb
+    ckptl = drone.ckstr2ptl(ckstr)
+    l = tltl.get_value(ckptl,ckname)
+    if(l.__len__() == 0):
+        return(l[0])
+    else:
+        return(l)
+
+
+
+
 
 #####this function need from xdict.jprint import pobj
 def show(horb):
