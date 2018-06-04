@@ -1608,7 +1608,7 @@ def includes(horb,ckname,**kwargs):
     return(ckname in ckstr2dict(ckstr))
 
 
-def get(horb,ckname,**kwargs)
+def get(horb,ckname,**kwargs):
     cond = is_ckheader(horb)
     if(cond):
         ckstr = split_ckheader(horb,mode="ckstr")['ckstr']
