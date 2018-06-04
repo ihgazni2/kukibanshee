@@ -1614,7 +1614,7 @@ def get(horb,ckname,**kwargs):
         ckstr = split_ckheader(horb,mode="ckstr")['ckstr']
     else:
         ckstr = horb
-    ckptl = drone.ckstr2ptl(ckstr)
+    ckptl = ckstr2ptl(ckstr)
     l = tltl.get_value(ckptl,ckname)
     if(l.__len__() == 0):
         return(l[0])
