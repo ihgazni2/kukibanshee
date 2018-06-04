@@ -146,6 +146,7 @@ for detailed usage and functions please refer to:
 ├──6. [uniqualize](kukibanshee/Images/uniqualize.0.png)  <br>
 ├──7. [show](kukibanshee/Images/drone.show.0.png)  <br>
 ├──8. [includes](kukibanshee/Images/drone.includes.0.png)  <br>
+├──9. [get](kukibanshee/Images/drone.get.0.png)  <br>
 
 ------------------------------------------------------------
 
