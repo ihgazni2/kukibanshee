@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 setup(
       name="kukibanshee",
-      version = "0.2.8",
+      version = "0.2.9",
       description="http cookie,rfc6265",
       author="dapeli",
       url="https://github.com/ihgazni2/kukibanshee",
