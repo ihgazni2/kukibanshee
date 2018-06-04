@@ -145,7 +145,7 @@ for detailed usage and functions please refer to:
 ├──5. [replace_same](kukibanshee/Images/replace_same.0.png)  <br>
 ├──6. [uniqualize](kukibanshee/Images/uniqualize.0.png)  <br>
 ├──7. [show](kukibanshee/Images/drone.show.0.png)  <br>
-
+├──8. [includes](kukibanshee/Images/drone.includes.0.png)  <br>
 
 ------------------------------------------------------------
 
