@@ -1620,7 +1620,7 @@ def get(horb,ckname,**kwargs):
         ckstr = horb
     ckptl = ckstr2ptl(ckstr)
     l = tltl.get_value(ckptl,ckname)
-    if(l.__len__() == 0):
+    if(l.__len__() == 1):
         return(l[0])
     else:
         return(l)
