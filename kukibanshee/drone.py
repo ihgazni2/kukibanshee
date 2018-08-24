@@ -1894,7 +1894,7 @@ def sl2setcktl(setcksl):
         setcktl = sl2setcktl(setcksl)
         pobj(setcktl)
     '''
-    setcktl = array_map(setcksl,str2setcktuple)
+    setcktl = elel.array_map(setcksl,str2setcktuple)
     return(setcktl)
 
 def setcktuple2dict(setcktuple):
