@@ -364,10 +364,8 @@ def cond_expired(ck):
     if(expiry == None):
         cond = False 
     else:
-        pass
-    ####
-    now = time.time()
-    cond = (now >= expiry)
+        now = time.time()
+        cond = (now >= expiry)
     if(cond):
         print(INVALIDLOG['expiry'])
     else:
