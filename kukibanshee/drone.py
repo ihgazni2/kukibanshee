@@ -1775,7 +1775,7 @@ def sl2setckdl(setcksl):
         setckdl = sl2setckdl(setcksl)
         pobj(setckdl)
     '''
-    setckdl = array_map(setcksl,str2setckdict)
+    setckdl = elel.array_map(setcksl,str2setckdict)
     return(setckdl)
 
 def setckdl2sl(setckdl):
@@ -1784,7 +1784,7 @@ def setckdl2sl(setckdl):
         setcksl = setckdl2sl(setckdl)
         pobj(setcksl)
     '''
-    setcksl = array_map(setckdl,setckdict2str)
+    setcksl = elel.array_map(setckdl,setckdict2str)
     return(setcksl)
 
 #命名规则  setckheaders > setcktl > setckdl > setcksl 
