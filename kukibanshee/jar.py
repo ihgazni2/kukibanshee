@@ -361,12 +361,17 @@ def cond_expired(ck):
     '''
     ####
     expiry = ck['expiry-time']
+    if(expiry == None):
+        cond = False 
+    else:
+        pass
+    ####
     now = time.time()
     cond = (now >= expiry)
     if(cond):
-        pass
-    else:
         print(INVALIDLOG['expiry'])
+    else:
+        pass
     return(cond)
 
 def cond_domain(ck,server):
