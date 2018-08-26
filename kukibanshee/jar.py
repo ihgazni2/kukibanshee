@@ -339,6 +339,16 @@ def setckdict2Cookie(setckdict,**kwargs):
         ck['unquote_plus'] = True
     return(ck)
 
+
+# @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+def setckstr2Cookie(setckstr,origin):
+    setckdict = drone.str2setckdict(setckstr)
+    ck = setckdict2Cookie(setckdict,origin)
+    return(ck)
+
+# @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
 def read_file_content(**kwargs):
     fd = open(kwargs['fn'],kwargs['op'])
     rslt = fd.read()
@@ -436,7 +446,42 @@ def sort_ckl(ckl,**kwargs):
     ckl = elel.array_map(ckl,del_plen)
     return(ckl)
 
+# @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+def slctckpair(ck,dst_url):
+        '''
+            get valid ckpair for dst_url
+        '''
+        rslt = urllib.parse.urlparse(dst_url)
+        scheme = rslt.scheme
+        netloc = rslt.netloc
+        path = rslt.path
+        cond1 = not(cond_expired(ck))
+        cond2 = cond_domain(ck,netloc)
+        cond3 = cond_path(ck,path)
+        cond4 = cond_secure(ck,scheme)
+        cond = (cond1 & cond2 & cond3 & cond4)
+        if(cond):
+            if(ck['unquote']):
+                if(ck['unquote_plus']):
+                    name = urllib.parse.quote_plus(ck['name'])
+                    value = urllib.parse.quote_plus(ck['value'])
+                else:
+                    name = urllib.parse.quote(ck['name'])
+                    value = urllib.parse.quote(ck['value'])
+            else:
+                name = ck['name']
+                value = ck['value']
+            ckpair = drone.nv2ckpair(name,value)
+            return(ckpair)
+        else:
+            return(None)
 
+# @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+def ckl2ckstr(ckl,dst_url):
+    ckpl = elel.array_map(ckl,slctckpair,dst_url)
+    ckstr = drone.pl2ckstr(ckpl)
+    return(ckstr)
 
 # @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
@@ -454,11 +499,11 @@ class Cookie():
         if('unquote' in kwargs):
             unquote = kwargs['unquote']
         else:
-            unquote = True
+            unquote = False
         if('unquote_plus' in kwargs):
             unquote_plus = kwargs['unquote_plus']
         else:
-            unquote_plus = True
+            unquote_plus = False
         if(unquote):
             setck = drone.unquote_setck(setck,plus = unquote_plus)
         else:

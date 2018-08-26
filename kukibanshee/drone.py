@@ -1705,9 +1705,13 @@ def setckheaders2tl(setckheaders,**kwargs):
 
 #一些invalid 的set-cookie-str 可能会包含多个cookie-pair ,多个同名的cookie-av, 这个放在validate format里面做
 #目前假定所有server发送的都是正确的格式
+
+#单个setckbody
 #setckstr          set-cookie-string      "__Host-user_session=Tz98; path=/; expires=Tue, 27 Mar 2018 05:30:16 -0000; secure; HttpOnly; SameSite=Strict"              #cookie-pair *( ";" SP cookie-av ) 
 #setckdict         set-cookie-dict      {'SameSite=Strict': True, 'Path': '/', 'value': 'Tz98', 'HttpOnly': True, 'Secure': True, 'name': '__Host-user_session', 'Expires': 'Tue, 27 Mar 2018 05:30:16 -0000'}
-#setckbody         setckstr | setckdict   
+#setckbody         setckstr | setckdict  
+
+#若干setckbody组成的list,因为response可能返回多个setckbody 
 #setcksl           set-cookie_stringList  
 #setckdl           set-cookie-dictList    
 
@@ -2276,4 +2280,11 @@ def validate_ckav(ckav,**kwargs):
     return(cond)
     
     
+# @@@@@@@@@@@@@@@@@@
+# select without jar filter handling
+def setcksl2ckstr(setcksl):
+    setcktl = sl2setcktl(setcksl)
+    ckstr = setcktl2ckstr(setcktl)
+    return(ckstr)
+
 
