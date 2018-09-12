@@ -344,7 +344,7 @@ def setckdict2Cookie(setckdict,**kwargs):
 
 def setckstr2Cookie(setckstr,origin):
     setckdict = drone.str2setckdict(setckstr)
-    ck = setckdict2Cookie(setckdict,origin)
+    ck = setckdict2Cookie(setckdict,origin=origin)
     return(ck)
 
 # @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
