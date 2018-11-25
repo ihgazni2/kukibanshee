@@ -49,6 +49,31 @@ def str_rstrip(s,char,count):
 
 
 #regex 
+def regex_gen(regex,input,*args):
+    args = list(args)
+    arrlen = args.__len__()
+    if(arrlen==0):
+        start = 0
+        end = input.__len__()
+    elif(arrlen==1):
+        start = args[0]
+        end = input.__len__()
+    else:
+        start = args[0]
+        end = args[1]
+    cur = start
+    while(True):
+        m = regex.search(input,cur)
+        if(m):
+            if(m.start()<end):
+                cur = m.end()
+            else:
+                pass
+            yield(m)
+        else:
+            yield(m)
+
+
 def _real_dollar(s,m):
     '''
         $ Matches the end of the string or just before the newline at the end of the string
