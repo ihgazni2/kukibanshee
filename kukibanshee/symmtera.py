@@ -1,13 +1,12 @@
 import re
 import copy
+from typing.re import Pattern
 
 def is_regex(m):
     '''
     '''
-    regex = re.compile('')
-    cond = (type(regex) == type(m))
+    cond = isinstance(m, Pattern)
     return(cond)
-
 
 operators = {'.','^','$','*','+','?','{','}','[',']','(',')','|','-','<','>','!',':'}
 slash = '\\'
